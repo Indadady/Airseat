@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>투어메이커/플라이유니티 - 항공좌석 확보 요청 자동생성기</title>
+    
+    <!-- Google Analytics 4 (투어메이커 통합 ID 탑재 완료) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JLH9GD9SVR');
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Noto Sans KR 전면 통일) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        /* 텍스트 영역 스크롤바 커스텀 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* 테이블 스타일링 */
+        .doc-table th { background-color: #f3f4f6; padding: 12px 10px; font-weight: 700; border: 1px solid #d1d5db; }
+        .doc-table td { padding: 12px 10px; border: 1px solid #d1d5db; }
+
+        /* A4 1페이지 단위 스타일링 (미리보기용) */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: white;
+            margin: 0 auto 20mm auto;
+            padding: 15mm 15mm; /* 여백을 20mm -> 15mm로 줄여 하단 잘림 방지 */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 프린트(PDF 내보내기)용 CSS */
+        @media print {
+            body {
+                background-color: white;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            #input-panel, #main-nav {
+                display: none !important;
+            }
+            #preview-panel {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                background: white !important;
+                display: block !important;
+            }
+            .a4-page {
+                margin: 0 !important;
+                box-shadow: none !important;
+                page-break-after: always;
+                min-height: auto !important;
+                height: 297mm !important;
+            }
+            .a4-page:last-child {
+                page-break-after: auto;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Top Navigation -->
+    <nav id="main-nav" class="bg-white border-b border-gray-200 text-gray-800 p-4 flex justify-between items-center shadow-sm no-print z-10 shrink-0">
+        <div class="flex items-center gap-3">
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8" alt="Tourmaker Logo" class="h-9 object-contain">
+            <h1 class="text-xl font-bold tracking-tight border-l-2 border-gray-300 pl-3 ml-1 text-gray-800">항공좌석 요청 및 규정 확인서 시스템 <span class="text-blue-600 text-sm ml-2 bg-blue-50 px-2 py-1 rounded">달력UI 및 로고 동기화 버전</span></h1>
+        </div>
+        <div>
+            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded shadow flex items-center gap-2 transition font-medium">
+                <i class="fas fa-print"></i> PDF 저장 및 인쇄
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Left Panel: Data Input -->
+        <div id="input-panel" class="w-[420px] bg-white border-r border-gray-300 overflow-y-auto p-6 shadow-inner shrink-0">
+            
+            <!-- 주관 브랜드 선택 -->
+            <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-building mr-2 text-slate-600"></i>진행 주체 (브랜드) 선택</h2>
+                <div class="flex gap-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="agency" value="tourmaker" class="form-radio h-4 w-4 text-blue-600" checked>
+                        <span class="ml-2 text-sm font-medium">투어메이커</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="agency" value="flyunity" class="form-radio h-4 w-4 text-sky-500">
+                        <span class="ml-2 text-sm font-medium">플라이유니티</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4"><i class="fas fa-edit mr-2 text-blue-600"></i>문서 정보 입력</h2>
+                
+                <div class="space-y-4">
+                    <!-- 기본 정보 -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">문서 번호</label>
+                            <input type="text" id="in_docNo" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: 투어-2026-001" value="투어-2026-0301">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">작성 일자</label>
+                            <input type="date" id="in_date" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- 기관 정보 -->
+                    <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                        <h3 class="text-sm font-bold text-gray-800 mb-3">요청 기관 (학교) 정보</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">학교(기관)명</label>
+                                <input type="text" id="in_schoolName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 사북중학교" value="사북중학교">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">대표자(교장)</label>
+                                    <input type="text" id="in_principal" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="홍길동">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">담당자(교사)</label>
+                                    <input type="text" id="in_teacher" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="김교사">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 항공 정보 -->
+                    <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                        <h3 class="text-sm font-bold text-gray-800 mb-3">항공 및 일정 정보</h3>
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">항공사명</label>
+                                    <input type="text" id="in_airline" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 제주항공" value="제주항공">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">총 인원 (명)</label>
+                                    <input type="number" id="in_pax" class="w-full border border-gray-300 rounded p-2 text-sm" value="45">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">행사명(노선)</label>
+                                <input type="text" id="in_eventName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 2026학년도 사북중학교 제주도 현장체험학습" value="2026학년도 2학년 제주도 현장체험학습">
+                            </div>
+                            
+                            <!-- ★ 달력 + 시간 UI 로 개선 ★ -->
+                            <div class="pt-2 border-t border-gray-200">
+                                <label class="block text-xs font-bold text-blue-800 mb-1">가는 날 (출발)</label>
+                                <div class="flex gap-2 mb-2">
+                                    <input type="date" id="in_depDate" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <input type="time" id="in_depTime" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="09:00">
+                                </div>
+                                <input type="text" id="in_depFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C105 / 김포-제주)" value="7C105 / 김포-제주">
+                            </div>
+
+                            <div class="pt-2 border-t border-gray-200">
+                                <label class="block text-xs font-bold text-blue-800 mb-1">오는 날 (도착)</label>
+                                <div class="flex gap-2 mb-2">
+                                    <input type="date" id="in_arrDate" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <input type="time" id="in_arrTime" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="15:00">
+                                </div>
+                                <input type="text" id="in_arrFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C106 / 제주-김포)" value="7C106 / 제주-김포">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 패널티 규정 (높이 제한 해제하여 모두 출력되도록 수정됨) -->
+                    <div>
+                        <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (2페이지 정보공유용)</label>
+                        <textarea id="in_rules" rows="12" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">1. 본 항공 좌석은 '단체(그룹) 항공권'으로, 일반 개인 항공권과는 다른 규정이 적용됨을 사전 안내해 드립니다.
+
+2. 좌석 확약(PNR 생성) 이후, 학교 측 사정으로 인한 전체 취소 또는 인원 변경 시 [제주항공]의 규정에 따른 수수료가 발생할 수 있습니다.
+
+3. [제주항공 그룹 항공권 취소/위약금 규정]
+  - 출발일 기준 31일 전까지 취소 : 수수료 없음 (발권 전)
+  - 출발일 기준 30일 ~ 15일 전 취소 : 1인당 20,000원
+  - 출발일 기준 14일 ~ 출발 당일 취소 : 항공요금의 100% 수수료 발생 (환불 불가)
+
+4. 탑승자 명단 확정(발권) 이후에는 단순 이름 변경이 불가하며, 취소 후 재예약으로 간주되어 동일한 수수료가 청구됩니다.
+
+5. 천재지변 등 불가항력적인 사유에 의한 교육부/교육청 지침 하달 시, 수수료 면제 여부는 해당 항공사 단체영업팀의 최종 결정에 따릅니다.</textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Document Preview (2 Pages) -->
+        <div id="preview-panel" class="bg-gray-300 overflow-y-auto p-8 flex flex-col items-center flex-1 gap-8">
+            
+            <!-- ===================== [페이지 1] 항공좌석 요청서 ===================== -->
+            <div class="a4-page" id="page-1">
+                <div class="relative z-10 flex-1 flex flex-col">
+                    <!-- 공문서 헤더 (여백 최적화) -->
+                    <div class="flex justify-between items-start mb-8 shrink-0">
+                        <div class="flex items-center h-16"> 
+                            <!-- 로고 (투어/플라이 동일한 크기(h-14)로 동기화) -->
+                            <img id="out_doc_logo_1" src="" alt="Company Logo" class="object-contain transition-all duration-300">
+                        </div>
+                        <div class="text-right text-[13px] text-gray-600 font-medium pt-2">
+                            <div class="mb-1">문서번호 : <span id="out_docNo1" class="font-bold text-gray-800">투어-2026-0301</span></div>
+                            <div>시행일자 : <span id="out_date_display_1">2026년 03월 22일</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 문서 제목 -->
+                    <div class="text-center mb-10 shrink-0">
+                        <h1 class="text-3xl font-black tracking-widest border-b-[3px] border-gray-900 inline-block pb-3 px-8 mb-2">항공 단체좌석 요청서</h1>
+                    </div>
+
+                    <!-- 수발신 정보 -->
+                    <div class="text-[15.5px] mb-8 space-y-4 font-medium shrink-0">
+                        <div class="flex items-center">
+                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm">수 신</span>
+                            <span class="flex-1 ml-4"><span id="out_airline1" class="font-bold underline underline-offset-4 text-blue-800">제주항공</span> 및 단체 대행사(<span id="out_agencyName1">투어메이커</span>) 귀하</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm">발 신</span>
+                            <span id="out_schoolName1" class="flex-1 ml-4 font-bold text-lg">사북중학교</span>
+                        </div>
+                    </div>
+
+                    <!-- 본문 내용 -->
+                    <div class="text-[15px] leading-relaxed mb-8 shrink-0 border-t border-gray-200 pt-6">
+                        1. 귀 사의 무궁한 발전을 기원합니다.<br>
+                        2. 본 기관(<span id="out_schoolName2" class="font-bold">사북중학교</span>)은 원활한 행사 진행을 위하여 아래와 같이 <span class="font-bold text-blue-700">그룹 항공 좌석 확보를 정식으로 요청</span>합니다.
+                    </div>
+
+                    <!-- 일정 표 -->
+                    <div class="mb-6 shrink-0">
+                        <h3 class="font-bold text-[17px] mb-3 tracking-wide text-gray-800">[ 좌석 요청 내역 ]</h3>
+                        <table class="w-full border-collapse doc-table text-[14.5px] text-center">
+                            <tbody>
+                                <tr>
+                                    <th class="w-1/4">행사명</th>
+                                    <td colspan="3" class="text-left font-bold text-[15px] text-blue-800" id="out_eventName1">2026학년도 2학년 제주도 현장체험학습</td>
+                                </tr>
+                                <tr>
+                                    <th>이용 항공사</th>
+                                    <td class="font-bold text-[15px]" id="out_airline2">제주항공</td>
+                                    <th>탑승 예정 인원</th>
+                                    <td class="font-bold text-[15.5px] text-blue-700"><span id="out_pax1">45</span> 명</td>
+                                </tr>
+                                <tr>
+                                    <th>가는 편 (출발)</th>
+                                    <td colspan="3" class="text-left font-medium tracking-wide">
+                                        <span id="out_depDate1">2026년 05월 10일 (수) 09:00</span> &nbsp;|&nbsp; <span id="out_depFlight1" class="font-bold">7C105 / 김포-제주</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>오는 편 (도착)</th>
+                                    <td colspan="3" class="text-left font-medium tracking-wide">
+                                        <span id="out_arrDate1">2026년 05월 12일 (금) 15:00</span> &nbsp;|&nbsp; <span id="out_arrFlight1" class="font-bold">7C106 / 제주-김포</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 주의사항 및 동의 -->
+                    <div class="mb-8 p-4 bg-gray-50 border border-gray-300 rounded-sm text-[14.5px] font-medium leading-relaxed text-gray-800">
+                        <i class="fas fa-check-circle text-blue-600 mr-2"></i>상기 일정의 그룹 항공 좌석 확보를 공식 요청하며, 첨부된 <strong>[항공 그룹 예약 규정 확인서]</strong>의 내용을 참고 및 확인합니다.
+                    </div>
+
+                    <!-- ★ 직인란 깔끔하게 1개로 통합 ★ -->
+                    <div class="text-center text-lg mt-auto mb-2 shrink-0">
+                        <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16.5px]">2026년 03월 22일</div>
+                        
+                        <div class="flex justify-end items-center pr-10">
+                            <div class="text-right">
+                                <div class="mb-4 text-[22px] font-bold tracking-widest">요청 기관 : <span id="out_schoolName3" class="text-[24px] ml-3">사북중학교</span></div>
+                                <div class="flex items-center justify-end">
+                                    <span class="text-[22px] font-bold tracking-widest mr-2">대 표 자 :</span>
+                                    <span id="out_principal1" class="text-[26px] font-black mr-2">홍 길 동</span>
+                                    
+                                    <!-- 도장 찍는 곳 통합 디자인 -->
+                                    <div class="relative w-[75px] h-[75px] flex items-center justify-center ml-2">
+                                        <span class="text-[17px] font-bold text-gray-800 z-10 relative bg-white px-1">(직인)</span>
+                                        <div class="absolute inset-0 border-[2px] border-dashed border-gray-400 rounded-full no-print"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer (상단으로 끌어올려 잘림 방지) -->
+                <div class="mt-6 border-t-2 border-gray-800 pt-4 text-center w-full shrink-0">
+                    <p id="footer-credit-1" class="text-[12px] text-[#6c757d] font-medium m-0">
+                        [System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 트래블 테크 기술 제휴로 제작되었습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ===================== [페이지 2] 항공사 규정 정보 공유 ===================== -->
+            <div class="a4-page" id="page-2">
+                <div class="relative z-10 flex-1 flex flex-col">
+                    <!-- 공문서 헤더 (페이지 2) -->
+                    <div class="flex justify-between items-start mb-10 shrink-0">
+                        <div class="flex items-center h-16"> 
+                            <img id="out_doc_logo_2" src="" alt="Company Logo" class="object-contain transition-all duration-300">
+                        </div>
+                        <div class="text-right text-[12px] text-gray-500 font-medium pt-2">
+                            <div class="mb-1">문서번호 : <span id="out_docNo2" class="">투어-2026-0301</span></div>
+                            <div>참고 문서 (Page 2)</div>
+                        </div>
+                    </div>
+
+                    <!-- 문서 제목 (부드럽게) -->
+                    <div class="text-center mb-10 shrink-0">
+                        <h2 class="text-[22px] font-black tracking-widest border-b-[2px] border-gray-800 inline-block pb-2 px-6 mb-2 text-gray-800">항공 그룹 예약 규정 확인서</h2>
+                    </div>
+
+                    <!-- 행사 개요 요약 -->
+                    <div class="mb-8 px-6 py-4 bg-gray-50 border-l-[4px] border-blue-400 shrink-0">
+                        <div class="flex items-center text-[14.5px] mb-2 font-medium">
+                            <span class="w-24 text-gray-600 font-bold">행 사 명 :</span>
+                            <span class="font-bold text-gray-800" id="out_eventName2">2026학년도 2학년 제주도 현장체험학습</span>
+                        </div>
+                        <div class="flex items-center text-[14.5px] font-medium">
+                            <span class="w-24 text-gray-600 font-bold">항공사명 :</span>
+                            <span class="font-bold text-gray-800" id="out_airline3">제주항공</span>
+                        </div>
+                    </div>
+
+                    <!-- ★ 패널티 규정 (높이 제한 없이 모든 내용 출력) ★ -->
+                    <div class="mb-8">
+                        <h3 class="font-bold text-[18px] mb-4 tracking-wide flex items-center text-gray-800">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>예약 취소 및 위약금(수수료) 안내
+                        </h3>
+                        <div class="p-6 border-[2px] border-gray-300 bg-white shadow-sm">
+                            <div class="text-[15.5px] whitespace-pre-wrap text-gray-800 leading-[2.0] font-medium" id="out_rules">1. 본 항공좌석은 그룹(단체) 항공권으로, 일반 개인 항공권과 다른 엄격한 취소/변경 규정이 적용됩니다.
+2. PNR(예약번호) 생성 및 좌석 확약 이후 취소 또는 인원 변경 시, [제주항공]의 그룹 수수료 규정에 따라 1인당 위약금(건당 20,000원~전액)이 무조건 발생합니다.</div>
+                        </div>
+                    </div>
+
+                    <!-- 부드러운 맺음말 -->
+                    <div class="mt-auto pt-6 border-t-[2px] border-gray-300 shrink-0">
+                        <p class="text-[14.5px] font-medium text-gray-600 leading-relaxed text-center py-4 bg-gray-50 rounded-sm">
+                            본 문서는 항공사 단체 예약 진행 시 적용되는 일반적인 규정을 사전에 공유해 드리기 위한 참고 자료입니다.<br>
+                            안전하고 원활한 행사 진행을 위해 최선을 다하겠습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-6 pt-4 text-center w-full border-t border-gray-200 shrink-0">
+                    <p id="footer-credit-2" class="text-[11px] text-[#9ca3af] font-medium m-0">
+                        [System Powered by TOURMAKER] Page 2 of 2
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 브랜드별 데이터 정의
+        const BRAND_DATA = {
+            tourmaker: {
+                name: '투어메이커',
+                logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8',
+                logoClass: 'h-14', // 투어메이커, 플라이유니티 크기 완벽 동기화 (h-14)
+                prefix: '투어-',
+                creditAgency: '투어메이커'
+            },
+            flyunity: {
+                name: '플라이유니티',
+                logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000',
+                logoClass: 'h-14', // 투어메이커, 플라이유니티 크기 완벽 동기화 (h-14)
+                prefix: '플라이-',
+                creditAgency: '플라이유니티'
+            }
+        };
+
+        window.onload = function() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            
+            // 기본 날짜 세팅
+            document.getElementById('in_date').value = `${year}-${month}-${day}`;
+            document.getElementById('in_depDate').value = `${year}-${month}-${parseInt(day)+14 > 30 ? '28' : String(parseInt(day)+14).padStart(2, '0')}`; // 임의 출발일
+            document.getElementById('in_arrDate').value = `${year}-${month}-${parseInt(day)+16 > 30 ? '30' : String(parseInt(day)+16).padStart(2, '0')}`; // 임의 도착일
+            
+            updateDisplayDate();
+            updateFlightDates();
+            
+            document.querySelectorAll('input[name="agency"]').forEach(radio => {
+                radio.addEventListener('change', (e) => switchBrand(e.target.value));
+            });
+            
+            // 초기 텍스트 에어리어 값 우측 반영
+            document.getElementById('out_rules').innerText = document.getElementById('in_rules').value;
+
+            switchBrand('tourmaker');
+        };
+
+        function switchBrand(brandKey) {
+            const data = BRAND_DATA[brandKey];
+            
+            // 1, 2페이지 로고 크기 동일하게 세팅
+            const logo1 = document.getElementById('out_doc_logo_1');
+            logo1.src = data.logoUrl;
+            logo1.className = `object-contain transition-all duration-300 ${data.logoClass}`;
+
+            const logo2 = document.getElementById('out_doc_logo_2');
+            logo2.src = data.logoUrl;
+            logo2.className = `object-contain transition-all duration-300 ${data.logoClass}`;
+            
+            document.getElementById('out_agencyName1').innerText = data.name;
+            
+            // 문서번호 갱신
+            const docInput = document.getElementById('in_docNo');
+            if(docInput.value.includes('-')) {
+                const parts = docInput.value.split('-');
+                parts[0] = data.prefix.replace('-', '');
+                docInput.value = parts.join('-');
+            } else {
+                docInput.value = data.prefix + "2026-0301";
+            }
+            
+            document.getElementById('out_docNo1').innerText = docInput.value;
+            document.getElementById('out_docNo2').innerText = docInput.value;
+            
+            // 푸터 크레딧
+            const footerEl = document.getElementById('footer-credit-1');
+            if (brandKey === 'tourmaker') {
+                footerEl.innerHTML = `[System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 <a href="https://tourmaker.kr" target="_blank" class="hover:underline text-blue-800">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.`;
+            } else {
+                footerEl.innerHTML = `[System Powered by TOURMAKER] 본 서류는 <strong>${data.creditAgency}</strong>의 기획과 <a href="https://tourmaker.kr" target="_blank" class="hover:underline text-blue-800">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.`;
+            }
+        }
+
+        // 일반 텍스트 매핑
+        const mappings = {
+            'in_docNo': ['out_docNo1', 'out_docNo2'],
+            'in_schoolName': ['out_schoolName1', 'out_schoolName2', 'out_schoolName3'],
+            'in_principal': ['out_principal1'],
+            'in_airline': ['out_airline1', 'out_airline2', 'out_airline3'],
+            'in_pax': ['out_pax1'],
+            'in_eventName': ['out_eventName1', 'out_eventName2'],
+            'in_depFlight': ['out_depFlight1'],
+            'in_arrFlight': ['out_arrFlight1'],
+            'in_rules': ['out_rules']
+        };
+
+        // 작성 일자 포맷팅
+        function updateDisplayDate() {
+            const dateVal = document.getElementById('in_date').value;
+            if(dateVal) {
+                const dateObj = new Date(dateVal);
+                const format = `${dateObj.getFullYear()}년 ${String(dateObj.getMonth() + 1).padStart(2, '0')}월 ${String(dateObj.getDate()).padStart(2, '0')}일`;
+                document.getElementById('out_date_display_1').innerText = format;
+                document.getElementById('out_date_display_2').innerText = format;
+            }
+        }
+
+        // 달력+시간을 합쳐서 예쁘게 포맷팅 해주는 함수
+        function formatDateTime(dateStr, timeStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const day = days[d.getDay()];
+            const formattedDate = `${d.getFullYear()}년 ${String(d.getMonth() + 1).padStart(2, '0')}월 ${String(d.getDate()).padStart(2, '0')}일 (${day})`;
+            return timeStr ? `${formattedDate} ${timeStr}` : formattedDate;
+        }
+
+        // 항공 일정 날짜 업데이트
+        function updateFlightDates() {
+            document.getElementById('out_depDate1').innerText = formatDateTime(document.getElementById('in_depDate').value, document.getElementById('in_depTime').value);
+            document.getElementById('out_arrDate1').innerText = formatDateTime(document.getElementById('in_arrDate').value, document.getElementById('in_arrTime').value);
+        }
+
+        // 이벤트 리스너 등록
+        document.getElementById('in_date').addEventListener('input', updateDisplayDate);
+        document.getElementById('in_depDate').addEventListener('input', updateFlightDates);
+        document.getElementById('in_depTime').addEventListener('input', updateFlightDates);
+        document.getElementById('in_arrDate').addEventListener('input', updateFlightDates);
+        document.getElementById('in_arrTime').addEventListener('input', updateFlightDates);
+
+        for (const [inputId, outputIds] of Object.entries(mappings)) {
+            const inputEl = document.getElementById(inputId);
+            if (inputEl) {
+                inputEl.addEventListener('input', function(e) {
+                    const value = e.target.value;
+                    outputIds.forEach(outId => {
+                        const outEl = document.getElementById(outId);
+                        if(outEl) {
+                            outEl.innerText = value; // textarea의 줄바꿈도 CSS의 whitespace-pre-wrap 덕분에 정상 출력됨
+                        }
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
