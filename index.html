@@ -45,16 +45,15 @@
             min-height: 297mm;
             background-color: white;
             margin: 0 auto 20mm auto;
-            padding: 15mm 15mm; 
+            padding: 15mm 15mm 20mm 15mm; /* 하단 여백 추가 확보 */
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             display: flex;
             flex-direction: column;
         }
 
-        /* 프린트(PDF 내보내기)용 CSS - 1장만 나오는 오류 완벽 해결 */
+        /* 프린트(PDF 내보내기)용 CSS - 레이아웃, 여백, 쏠림 완벽 제어 */
         @media print {
-            /* 웹용 강제 높이/숨김 속성 무력화 */
             html, body {
                 height: auto !important;
                 overflow: visible !important;
@@ -85,16 +84,18 @@
                 overflow: visible !important;
             }
 
-            /* 각 A4 페이지별 인쇄 강제 분할 설정 */
+            /* 각 A4 페이지별 인쇄 강제 분할 및 중앙 정렬 설정 */
             .a4-page {
-                margin: 0 !important;
-                padding: 15mm !important;
+                margin: 0 auto !important; /* ★ 95% 축소 시 왼쪽 쏠림 방지 (중앙 정렬 유지) */
+                padding: 12mm 15mm 18mm 15mm !important; /* ★ 하단 여백(18mm)으로 푸터 잘림 완벽 방지 */
                 box-shadow: none !important;
-                page-break-after: always !important; /* 여기서 페이지 나눔 */
+                page-break-after: always !important; 
                 page-break-inside: avoid !important;
-                min-height: auto !important;
-                height: auto !important;
-                display: block !important;
+                min-height: 296mm !important; /* A4 높이 고정으로 레이아웃 흐트러짐 차단 */
+                height: 296mm !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important; /* 물리적 페이지 밖으로 나가는 요소 차단 */
             }
             
             .a4-page:last-child {
@@ -225,7 +226,7 @@
                         </div>
                     </div>
 
-                    <!-- 패널티 규정 입력 (내용 짤림 방지) -->
+                    <!-- 패널티 규정 입력 -->
                     <div>
                         <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (2페이지 정보공유용)</label>
                         <textarea id="in_rules" rows="12" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">1. 본 항공 좌석은 '단체(그룹) 항공권'으로, 일반 개인 항공권과는 다른 규정이 적용됨을 사전 안내해 드립니다.
@@ -251,13 +252,12 @@
             
             <!-- ===================== [페이지 1] 항공좌석 요청서 ===================== -->
             <div class="a4-page" id="page-1">
-                <!-- flex-1 등 높이를 강제하는 요소를 최소화하여 자연스럽게 내용이 위치하도록 함 -->
-                <div class="relative z-10 flex flex-col" style="min-height: 100%;">
+                <div class="relative z-10 flex flex-col h-full flex-1">
                     
                     <!-- 공문서 헤더 -->
                     <div class="flex justify-between items-start mb-8 shrink-0">
                         <div class="flex items-center h-20"> 
-                            <!-- 로고 클래스는 JS에서 동적 관리 (투어 h-10(작게), 플라이 h-20(크게)) -->
+                            <!-- 로고 클래스는 JS에서 동적 관리 -->
                             <img id="out_doc_logo_1" src="" alt="Company Logo" class="object-contain transition-all duration-300">
                         </div>
                         <div class="text-right text-[13px] text-gray-600 font-medium pt-2">
@@ -325,8 +325,8 @@
                         <i class="fas fa-check-circle text-blue-600 mr-2"></i>상기 일정의 그룹 항공 좌석 확보를 공식 요청하며, 첨부된 <strong>[항공 그룹 예약 규정 확인서]</strong>의 내용을 참고 및 확인합니다.
                     </div>
 
-                    <!-- 직인란 (하단으로 밀어내기) -->
-                    <div class="text-center text-lg mt-auto pt-8 mb-4 shrink-0">
+                    <!-- 직인란 (하단으로 안전하게 밀어내기 & 위로 살짝 당김) -->
+                    <div class="text-center text-lg mt-auto pt-4 mb-2 shrink-0">
                         <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16.5px]">2026년 03월 22일</div>
                         
                         <div class="flex justify-end items-center pr-10">
@@ -346,8 +346,8 @@
                         </div>
                     </div>
                     
-                    <!-- Footer (1페이지) -->
-                    <div class="mt-4 border-t border-gray-200 pt-4 text-center w-full shrink-0">
+                    <!-- Footer (1페이지 - 인쇄 시 잘림을 완벽히 방지하는 여백) -->
+                    <div class="mt-4 border-t border-gray-200 pt-3 pb-1 text-center w-full shrink-0">
                         <p id="footer-credit-1" class="text-[12px] text-[#6c757d] font-medium m-0">
                             [System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 트래블 테크 기술 제휴로 제작되었습니다.
                         </p>
@@ -357,7 +357,7 @@
 
             <!-- ===================== [페이지 2] 항공사 규정 정보 공유 ===================== -->
             <div class="a4-page" id="page-2">
-                <div class="relative z-10 flex flex-col" style="min-height: 100%;">
+                <div class="relative z-10 flex flex-col h-full flex-1">
                     <!-- 공문서 헤더 (페이지 2) -->
                     <div class="flex justify-between items-start mb-10 shrink-0">
                         <div class="flex items-center h-20"> 
@@ -387,12 +387,11 @@
                         </div>
                     </div>
 
-                    <!-- ★ 패널티 규정 (높이 제한을 주지 않아 입력한 텍스트가 모두 출력됨) ★ -->
+                    <!-- ★ 패널티 규정 ★ -->
                     <div class="mb-8 shrink-0">
                         <h3 class="font-bold text-[18px] mb-4 tracking-wide flex items-center text-gray-800">
                             <i class="fas fa-info-circle text-blue-500 mr-2"></i>예약 취소 및 위약금(수수료) 안내
                         </h3>
-                        <!-- h-full이나 flex-1을 빼서 텍스트 길이만큼 자연스럽게 박스가 늘어나게 함 -->
                         <div class="p-6 border-[2px] border-gray-300 bg-white shadow-sm">
                             <div class="text-[15.5px] whitespace-pre-wrap text-gray-800 leading-[2.0] font-medium" id="out_rules"></div>
                         </div>
@@ -406,8 +405,8 @@
                         </p>
                     </div>
 
-                    <!-- Footer -->
-                    <div class="mt-6 pt-4 text-center w-full border-t border-gray-200 shrink-0">
+                    <!-- Footer (2페이지) -->
+                    <div class="mt-4 pt-3 pb-1 text-center w-full border-t border-gray-200 shrink-0">
                         <p id="footer-credit-2" class="text-[11px] text-[#9ca3af] font-medium m-0">
                             [System Powered by TOURMAKER] Page 2 of 2
                         </p>
@@ -431,7 +430,7 @@
             flyunity: {
                 name: '플라이유니티',
                 logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000',
-                logoClass: 'h-20', // 플라이유니티는 2배 더 큼직하게 (h-20)
+                logoClass: 'h-20', // 플라이유니티는 확실히 눈에 띄게 (h-20)
                 prefix: '플라이-',
                 creditAgency: '플라이유니티'
             }
@@ -445,10 +444,10 @@
             
             // 기본 날짜 세팅
             document.getElementById('in_date').value = `${year}-${month}-${day}`;
-            document.getElementById('in_depDate').value = `${year}-${month}-${parseInt(day)+14 > 30 ? '28' : String(parseInt(day)+14).padStart(2, '0')}`; // 임의 출발일
-            document.getElementById('in_arrDate').value = `${year}-${month}-${parseInt(day)+16 > 30 ? '30' : String(parseInt(day)+16).padStart(2, '0')}`; // 임의 도착일
+            document.getElementById('in_depDate').value = `${year}-${month}-${parseInt(day)+14 > 30 ? '28' : String(parseInt(day)+14).padStart(2, '0')}`;
+            document.getElementById('in_arrDate').value = `${year}-${month}-${parseInt(day)+16 > 30 ? '30' : String(parseInt(day)+16).padStart(2, '0')}`;
             
-            // 초기 텍스트 에어리어 값 우측 반영 (잘림 버그 해결)
+            // 초기 텍스트 에어리어 값 우측 반영
             document.getElementById('out_rules').innerText = document.getElementById('in_rules').value;
 
             updateDisplayDate();
@@ -464,7 +463,7 @@
         function switchBrand(brandKey) {
             const data = BRAND_DATA[brandKey];
             
-            // 1, 2페이지 로고 크기 차등 적용 (투어 작게, 플라이 크게)
+            // 1, 2페이지 로고 크기 차등 적용
             const logo1 = document.getElementById('out_doc_logo_1');
             logo1.src = data.logoUrl;
             logo1.className = `object-contain transition-all duration-300 ${data.logoClass}`;
@@ -497,7 +496,6 @@
             }
         }
 
-        // 일반 텍스트 매핑
         const mappings = {
             'in_docNo': ['out_docNo1', 'out_docNo2'],
             'in_schoolName': ['out_schoolName1', 'out_schoolName2', 'out_schoolName3'],
@@ -509,7 +507,6 @@
             'in_arrFlight': ['out_arrFlight1']
         };
 
-        // 작성 일자 포맷팅
         function updateDisplayDate() {
             const dateVal = document.getElementById('in_date').value;
             if(dateVal) {
@@ -519,7 +516,6 @@
             }
         }
 
-        // 달력+시간을 합쳐서 예쁘게 포맷팅 해주는 함수
         function formatDateTime(dateStr, timeStr) {
             if (!dateStr) return '';
             const d = new Date(dateStr);
@@ -529,20 +525,17 @@
             return timeStr ? `${formattedDate} ${timeStr}` : formattedDate;
         }
 
-        // 항공 일정 날짜 업데이트
         function updateFlightDates() {
             document.getElementById('out_depDate1').innerText = formatDateTime(document.getElementById('in_depDate').value, document.getElementById('in_depTime').value);
             document.getElementById('out_arrDate1').innerText = formatDateTime(document.getElementById('in_arrDate').value, document.getElementById('in_arrTime').value);
         }
 
-        // 이벤트 리스너 등록
         document.getElementById('in_date').addEventListener('input', updateDisplayDate);
         document.getElementById('in_depDate').addEventListener('input', updateFlightDates);
         document.getElementById('in_depTime').addEventListener('input', updateFlightDates);
         document.getElementById('in_arrDate').addEventListener('input', updateFlightDates);
         document.getElementById('in_arrTime').addEventListener('input', updateFlightDates);
 
-        // 일반 매핑 및 텍스트 에어리어(규정) 매핑
         for (const [inputId, outputIds] of Object.entries(mappings)) {
             const inputEl = document.getElementById(inputId);
             if (inputEl) {
@@ -556,7 +549,6 @@
             }
         }
         
-        // 규정 텍스트 에어리어 이벤트 (실시간 반영 보장)
         document.getElementById('in_rules').addEventListener('input', function(e) {
             document.getElementById('out_rules').innerText = e.target.value;
         });
