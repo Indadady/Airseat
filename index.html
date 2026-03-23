@@ -181,13 +181,9 @@
                 
                 <div class="space-y-4">
                     <!-- 기본 정보 -->
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">문서 번호</label>
-                            <input type="text" id="in_docNo" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="예: 투어-2026-001" value="투어-2026-0301">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">작성 일자</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">작성 일자 (하단 서명용)</label>
                             <!-- PDF 기준 날짜 세팅 -->
                             <input type="date" id="in_date" value="2026-03-23" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
@@ -304,14 +300,15 @@
                     <!-- 패널티 규정 입력 (내용 압축) -->
                     <div>
                         <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (요약)</label>
-                        <textarea id="in_rules" rows="15" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">■ 기본 확인 사항
+                        <textarea id="in_rules" rows="16" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">■ 기본 확인 사항
 예약 대행: 본 항공권은 낙찰자가 발급 및 수속을 대행합니다.
 사전 선급금(데포짓): 단체 좌석 확보를 위해 1인당 100,000원 납입 조건으로 확약되었으며, 취소 시 아래 규정에 따라 항공사 실비 위약금으로 귀속됩니다.
 
-1. 취소 수수료 규정 (항공사 위약금)
+1. 취소 수수료 및 허들(Hurdle) 규정
+허들 조건 (최소 탑승): 최초 확약 인원의 90% 이상 탑승 시에만 그룹 요금이 유지됩니다.
 출발 14일 이전 취소:
-- 예약 인원 10% 이내: 수수료 없음 (발권 전 한정)
-- 예약 인원 10% 초과: 미탑승 좌석당 100,000원 위약금 발생
+- 예약 인원의 10% 이내 취소: 수수료 없음 (발권 전 한정)
+- 예약 인원의 10% 초과 취소 (탑승률 90% 미만): 미탑승 좌석당 100,000원의 위약금 부과
 출발 14일 ~ 당일 취소: 항공 요금 전액 환불 불가 (100% 수수료)
 
 2. 탑승자 명단 확정 (더블 체크 요망)
@@ -333,27 +330,16 @@
             <div class="a4-page" id="page-1">
                 <div class="relative z-10 flex flex-col h-full flex-1">
                     
-                    <!-- 공문서 헤더 (상단 여백 줄임 mb-8 -> mb-4) -->
-                    <div class="flex justify-between items-start mb-4 shrink-0">
-                        <div class="flex items-center h-14"> <!-- 로고 감싸는 영역 높이 축소 (h-20 -> h-14) -->
-                            <img id="out_doc_logo_1" src="" alt="Company Logo" class="object-contain transition-all duration-300">
-                        </div>
-                        <div class="text-right text-[13px] text-gray-600 font-medium pt-1">
-                            <div class="mb-1">문서번호 : <span id="out_docNo1" class="font-bold text-gray-800">투어-2026-0301</span></div>
-                            <div>시행일자 : <span id="out_date_display_1">2026년 03월 22일</span></div>
-                        </div>
-                    </div>
-
-                    <!-- 문서 제목 (mb-10 -> mb-6) -->
-                    <div class="text-center mb-6 shrink-0 mt-4">
+                    <!-- 문서 제목 -->
+                    <div class="text-center mb-6 shrink-0 mt-12">
                         <h1 class="text-[28px] font-black tracking-widest border-b-[3px] border-gray-900 inline-block pb-3 px-8 mb-2">항공 단체좌석 요청서</h1>
                     </div>
 
-                    <!-- 수발신 정보 (mb-8 -> mb-6) -->
+                    <!-- 수발신 정보 -->
                     <div class="text-[15.5px] mb-6 space-y-3 font-medium shrink-0">
                         <div class="flex items-center">
                             <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm text-center">수 신</span>
-                            <span class="flex-1 ml-4"><span id="out_airline1" class="font-bold underline underline-offset-4 text-blue-800">제주항공</span> 및 단체 대행사(<span id="out_agencyName1">투어메이커</span>) 귀하</span>
+                            <span class="flex-1 ml-4"><span id="out_airline1" class="font-bold underline underline-offset-4 text-blue-800">에어로케이 RF</span> 귀하</span>
                         </div>
                         <div class="flex items-center">
                             <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm text-center">발 신</span>
@@ -404,7 +390,7 @@
                     </div>
 
                     <!-- 직인란 -->
-                    <div class="text-center text-lg mt-auto pt-4 mb-2 shrink-0">
+                    <div class="text-center text-lg mt-auto pt-4 mb-8 shrink-0">
                         <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16px]">2026년 03월 22일</div>
                         
                         <div class="flex justify-end items-center pr-10">
@@ -422,32 +408,15 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Footer (1페이지) -->
-                    <div class="mt-4 border-t border-gray-200 pt-3 pb-1 text-center w-full shrink-0">
-                        <p id="footer-credit-1" class="text-[12px] text-[#6c757d] font-medium m-0">
-                            [System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 트래블 테크 기술 제휴로 제작되었습니다.
-                        </p>
-                    </div>
                 </div>
             </div>
 
             <!-- ===================== [페이지 2] 항공사 규정 정보 공유 ===================== -->
             <div class="a4-page" id="page-2">
                 <div class="relative z-10 flex flex-col h-full flex-1">
-                    <!-- 공문서 헤더 (페이지 2 - 상단 여백 축소) -->
-                    <div class="flex justify-between items-start mb-6 shrink-0">
-                        <div class="flex items-center h-14"> 
-                            <img id="out_doc_logo_2" src="" alt="Company Logo" class="object-contain transition-all duration-300">
-                        </div>
-                        <div class="text-right text-[12px] text-gray-500 font-medium pt-1">
-                            <div class="mb-1">문서번호 : <span id="out_docNo2" class="">투어-2026-0301</span></div>
-                            <div>참고 문서 (Page 2)</div>
-                        </div>
-                    </div>
 
                     <!-- 문서 제목 -->
-                    <div class="text-center mb-8 shrink-0 mt-2">
+                    <div class="text-center mb-8 shrink-0 mt-12">
                         <h2 class="text-[22px] font-black tracking-widest border-b-[2px] border-gray-800 inline-block pb-2 px-6 mb-2 text-gray-800">항공 그룹 예약 규정 확인서</h2>
                     </div>
 
@@ -474,19 +443,9 @@
                         </div>
                     </div>
 
-                    <!-- 부드러운 맺음말 -->
-                    <div class="mt-auto pt-5 border-t-[2px] border-gray-300 shrink-0">
-                        <p class="text-[14px] font-medium text-gray-600 leading-relaxed text-center py-4 bg-gray-50 rounded-sm">
-                            본 문서는 항공사 단체 예약 진행 시 적용되는 일반적인 규정을 사전에 공유해 드리기 위한 참고 자료입니다.<br>
-                            안전하고 원활한 행사 진행을 위해 최선을 다하겠습니다.
-                        </p>
-                    </div>
-
                     <!-- Footer (2페이지) -->
-                    <div class="mt-4 pt-3 pb-1 text-center w-full border-t border-gray-200 shrink-0">
-                        <p id="footer-credit-2" class="text-[11px] text-[#9ca3af] font-medium m-0">
-                            [System Powered by TOURMAKER] Page 2 of 2
-                        </p>
+                    <div class="mt-auto pt-3 pb-1 text-center w-full shrink-0">
+                        <p class="text-[13px] text-gray-500 font-medium m-0">- 2 -</p>
                     </div>
                 </div>
             </div>
@@ -551,7 +510,7 @@
             
             // 초기값을 바탕으로 전체 미리보기 화면 업데이트
             const keys = [
-                'in_docNo', 'in_schoolName', 'in_principal', 'in_airline', 
+                'in_schoolName', 'in_principal', 'in_airline', 
                 'in_pax', 'in_eventName', 'in_depFlight', 'in_arrFlight'
             ];
             keys.forEach(key => {
@@ -564,42 +523,10 @@
 
         function switchBrand(brandKey) {
             const data = BRAND_DATA[brandKey];
-            
-            // 1, 2페이지 로고 크기 차등 적용
-            const logo1 = document.getElementById('out_doc_logo_1');
-            logo1.src = data.logoUrl;
-            logo1.className = `object-contain transition-all duration-300 ${data.logoClass}`;
-
-            const logo2 = document.getElementById('out_doc_logo_2');
-            logo2.src = data.logoUrl;
-            logo2.className = `object-contain transition-all duration-300 ${data.logoClass}`;
-            
-            document.getElementById('out_agencyName1').innerText = data.name;
-            
-            // 문서번호 갱신
-            const docInput = document.getElementById('in_docNo');
-            if(docInput.value.includes('-')) {
-                const parts = docInput.value.split('-');
-                parts[0] = data.prefix.replace('-', '');
-                docInput.value = parts.join('-');
-            } else {
-                docInput.value = data.prefix + "2026-0301";
-            }
-            
-            document.getElementById('out_docNo1').innerText = docInput.value;
-            document.getElementById('out_docNo2').innerText = docInput.value;
-            
-            // 푸터 크레딧
-            const footerEl = document.getElementById('footer-credit-1');
-            if (brandKey === 'tourmaker') {
-                footerEl.innerHTML = `[System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 <a href="https://tourmaker.kr" target="_blank" class="hover:underline text-blue-800">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.`;
-            } else {
-                footerEl.innerHTML = `[System Powered by TOURMAKER] 본 서류는 <strong>${data.creditAgency}</strong>의 기획과 <a href="https://tourmaker.kr" target="_blank" class="hover:underline text-blue-800">투어메이커</a>의 트래블 테크 기술 제휴로 제작되었습니다.`;
-            }
+            // 시스템 푸터 문구 제어 코드 제거
         }
 
         const mappings = {
-            'in_docNo': ['out_docNo1', 'out_docNo2'],
             'in_schoolName': ['out_schoolName1', 'out_schoolName2', 'out_schoolName3'],
             'in_principal': ['out_principal1'],
             'in_airline': ['out_airline1', 'out_airline2', 'out_airline3'],
@@ -614,7 +541,6 @@
             if(dateVal) {
                 const dateObj = new Date(dateVal);
                 const format = `${dateObj.getFullYear()}년 ${String(dateObj.getMonth() + 1).padStart(2, '0')}월 ${String(dateObj.getDate()).padStart(2, '0')}일`;
-                document.getElementById('out_date_display_1').innerText = format;
                 document.getElementById('out_date_display_2').innerText = format;
             }
         }
@@ -662,7 +588,6 @@
         function saveTemplate() {
             const data = {
                 agency: document.querySelector('input[name="agency"]:checked').value,
-                docNo: document.getElementById('in_docNo').value,
                 date: document.getElementById('in_date').value,
                 schoolName: document.getElementById('in_schoolName').value,
                 principal: document.getElementById('in_principal').value,
@@ -708,7 +633,7 @@
 
                     // 일반 인풋 값들 일괄 업데이트
                     const keys = [
-                        'docNo', 'date', 'schoolName', 'principal', 'teacher', 
+                        'date', 'schoolName', 'principal', 'teacher', 
                         'airline', 'pax', 'eventName', 'depDate', 'depTime', 
                         'depFlight', 'arrDate', 'arrTime', 'arrFlight', 'rules'
                     ];
