@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투어메이커/플라이유니티 - 항공좌석 확보 요청 자동생성기</title>
     
-    <!-- Google Analytics 4 -->
+    <!-- Google Analytics 4 (투어메이커 통합 ID 탑재 완료) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -17,7 +17,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Noto Sans KR 전면 통일) -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome -->
@@ -39,13 +39,13 @@
         .doc-table th { background-color: #f3f4f6; padding: 10px 8px; font-weight: 700; border: 1px solid #d1d5db; }
         .doc-table td { padding: 10px 8px; border: 1px solid #d1d5db; }
 
-        /* A4 1페이지 단위 스타일링 (미리보기용) - 상단 여백 축소 */
+        /* A4 1페이지 단위 스타일링 (미리보기용) */
         .a4-page {
             width: 210mm;
             min-height: 297mm;
             background-color: white;
             margin: 0 auto 20mm auto;
-            padding: 10mm 15mm 20mm 15mm; /* 상단 여백 15mm -> 10mm로 축소하여 공간 확보 */
+            padding: 10mm 15mm 20mm 15mm; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             display: flex;
@@ -86,7 +86,7 @@
 
             .a4-page {
                 margin: 0 auto !important; 
-                padding: 8mm 15mm 15mm 15mm !important; /* 인쇄 시 상하단 여백 최적화 */
+                padding: 8mm 15mm 15mm 15mm !important; 
                 box-shadow: none !important;
                 page-break-after: always !important; 
                 page-break-inside: avoid !important;
@@ -130,8 +130,7 @@
     <!-- Top Navigation -->
     <nav id="main-nav" class="bg-white border-b border-gray-200 text-gray-800 p-4 flex justify-between items-center shadow-sm no-print z-10 shrink-0">
         <div class="flex items-center gap-3">
-            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8" alt="Tourmaker Logo" class="h-9 object-contain">
-            <h1 class="text-xl font-bold tracking-tight border-l-2 border-gray-300 pl-3 ml-1 text-gray-800">항공좌석 요청 및 규정 확인서 시스템</h1>
+            <h1 class="text-xl font-bold tracking-tight pl-3 ml-1 text-gray-800">항공좌석 요청 및 규정 확인서 시스템</h1>
         </div>
         <div>
             <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2 rounded shadow flex items-center gap-2 transition font-medium">
@@ -146,7 +145,7 @@
         <!-- Left Panel: Data Input -->
         <div id="input-panel" class="w-[420px] bg-white border-r border-gray-300 overflow-y-auto p-6 shadow-inner shrink-0 relative">
             
-            <!-- 브랜드 선택 -->
+            <!-- 브랜드 선택 (기능 유지, 출력물에서는 미노출) -->
             <div class="mb-5 bg-slate-50 p-4 rounded-lg border border-slate-200">
                 <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-building mr-2 text-slate-600"></i>진행 주체 (브랜드) 선택</h2>
                 <div class="flex gap-4">
@@ -184,7 +183,6 @@
                     <div class="grid grid-cols-1 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">작성 일자 (하단 서명용)</label>
-                            <!-- PDF 기준 날짜 세팅 -->
                             <input type="date" id="in_date" value="2026-03-23" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
                     </div>
@@ -195,17 +193,16 @@
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">학교(기관)명</label>
-                                <!-- PDF 기준 학교명 세팅 -->
                                 <input type="text" id="in_schoolName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 사북중학교" value="사북중학교">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">대표자(교장)</label>
-                                    <!-- PDF 기준 대표자 세팅 -->
                                     <input type="text" id="in_principal" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="임흥수">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">담당자(교사)</label>
+                                    <!-- 담당교사 입력란 -->
                                     <input type="text" id="in_teacher" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="">
                                 </div>
                             </div>
@@ -219,85 +216,40 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">항공사명</label>
-                                    <!-- PDF 기준 항공사 세팅 -->
-                                    <input type="text" id="in_airline" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 제주항공" value="에어로케이 RF">
+                                    <input type="text" id="in_airline" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 에어로케이 RF" value="에어로케이 RF">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">총 인원 (명)</label>
-                                    <!-- PDF 기준 인원 세팅 -->
                                     <input type="number" id="in_pax" class="w-full border border-gray-300 rounded p-2 text-sm" value="59">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">행사명(노선)</label>
-                                <!-- PDF 기준 행사명 세팅 -->
-                                <input type="text" id="in_eventName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 2026학년도 사북중학교 제주도 현장체험학습" value="2026학년도 사북중학교 2학년 국외현장체험학습(국외수학여행)">
+                                <input type="text" id="in_eventName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 2026학년도 사북중학교 국외현장체험학습" value="2026학년도 사북중학교 2학년 국외현장체험학습(국외수학여행)">
                             </div>
                             
                             <!-- 달력 + 시간 UI -->
                             <div class="pt-2 border-t border-gray-200">
                                 <label class="block text-xs font-bold text-blue-800 mb-1">가는 날 (출발)</label>
                                 <div class="flex gap-2 mb-2">
-                                    <!-- PDF 기준 가는날 세팅 -->
                                     <input type="date" id="in_depDate" value="2026-05-19" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                     <input type="time" id="in_depTime" value="15:50" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                 </div>
-                                <input type="text" id="in_depFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C105 / 김포-제주)" value="RF318 / 청주-간사이">
+                                <input type="text" id="in_depFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: RF318 / 청주-간사이)" value="RF318 / 청주-간사이">
                             </div>
 
                             <div class="pt-2 border-t border-gray-200">
                                 <label class="block text-xs font-bold text-blue-800 mb-1">오는 날 (도착)</label>
                                 <div class="flex gap-2 mb-2">
-                                    <!-- PDF 기준 오는날 세팅 -->
                                     <input type="date" id="in_arrDate" value="2026-05-22" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                     <input type="time" id="in_arrTime" value="10:55" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                                 </div>
-                                <input type="text" id="in_arrFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C106 / 제주-김포)" value="RF311 / 간사이-청주">
+                                <input type="text" id="in_arrFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: RF311 / 간사이-청주)" value="RF311 / 간사이-청주">
                             </div>
                         </div>
                     </div>
 
-                    <!-- 항공 정보 -->
-                    <div class="bg-gray-50 p-4 rounded border border-gray-200">
-                        <h3 class="text-sm font-bold text-gray-800 mb-3">항공 및 일정 정보</h3>
-                        <div class="space-y-3">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">항공사명</label>
-                                    <input type="text" id="in_airline" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 제주항공" value="제주항공">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-gray-700 mb-1">총 인원 (명)</label>
-                                    <input type="number" id="in_pax" class="w-full border border-gray-300 rounded p-2 text-sm" value="45">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-700 mb-1">행사명(노선)</label>
-                                <input type="text" id="in_eventName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 2026학년도 사북중학교 제주도 현장체험학습" value="2026학년도 2학년 제주도 현장체험학습">
-                            </div>
-                            
-                            <!-- 달력 + 시간 UI -->
-                            <div class="pt-2 border-t border-gray-200">
-                                <label class="block text-xs font-bold text-blue-800 mb-1">가는 날 (출발)</label>
-                                <div class="flex gap-2 mb-2">
-                                    <input type="date" id="in_depDate" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                                    <input type="time" id="in_depTime" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="09:00">
-                                </div>
-                                <input type="text" id="in_depFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C105 / 김포-제주)" value="7C105 / 김포-제주">
-                            </div>
-
-                            <div class="pt-2 border-t border-gray-200">
-                                <label class="block text-xs font-bold text-blue-800 mb-1">오는 날 (도착)</label>
-                                <div class="flex gap-2 mb-2">
-                                    <input type="date" id="in_arrDate" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                                    <input type="time" id="in_arrTime" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="15:00">
-                                </div>
-                                <input type="text" id="in_arrFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C106 / 제주-김포)" value="7C106 / 제주-김포">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 패널티 규정 입력 (내용 압축) -->
+                    <!-- 패널티 규정 입력 -->
                     <div>
                         <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (요약)</label>
                         <textarea id="in_rules" rows="16" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">■ 기본 확인 사항
@@ -347,7 +299,7 @@
                         </div>
                     </div>
 
-                    <!-- 본문 내용 (mb-8 -> mb-5) -->
+                    <!-- 본문 내용 -->
                     <div class="text-[15px] leading-relaxed mb-5 shrink-0 border-t border-gray-200 pt-5">
                         1. 귀 사의 무궁한 발전을 기원합니다.<br>
                         2. 본 기관(<span id="out_schoolName2" class="font-bold">사북중학교</span>)은 원활한 행사 진행을 위하여 아래와 같이 <span class="font-bold text-blue-700">그룹 항공 좌석 확보를 정식으로 요청</span>합니다.
@@ -360,24 +312,24 @@
                             <tbody>
                                 <tr>
                                     <th class="w-1/4">행사명</th>
-                                    <td colspan="3" class="text-left font-bold text-[14.5px] text-blue-800" id="out_eventName1">2026학년도 2학년 제주도 현장체험학습</td>
+                                    <td colspan="3" class="text-left font-bold text-[14.5px] text-blue-800" id="out_eventName1">2026학년도 사북중학교 2학년 국외현장체험학습(국외수학여행)</td>
                                 </tr>
                                 <tr>
                                     <th>이용 항공사</th>
-                                    <td class="font-bold text-[14.5px]" id="out_airline2">제주항공</td>
+                                    <td class="font-bold text-[14.5px]" id="out_airline2">에어로케이 RF</td>
                                     <th>탑승 예정 인원</th>
-                                    <td class="font-bold text-[15px] text-blue-700"><span id="out_pax1">45</span> 명</td>
+                                    <td class="font-bold text-[15px] text-blue-700"><span id="out_pax1">59</span> 명</td>
                                 </tr>
                                 <tr>
                                     <th>가는 편 (출발)</th>
                                     <td colspan="3" class="text-left font-medium tracking-wide">
-                                        <span id="out_depDate1">2026년 05월 10일 (수) 09:00</span> &nbsp;|&nbsp; <span id="out_depFlight1" class="font-bold">7C105 / 김포-제주</span>
+                                        <span id="out_depDate1">2026년 05월 19일 (화) 15:50</span> &nbsp;|&nbsp; <span id="out_depFlight1" class="font-bold">RF318 / 청주-간사이</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>오는 편 (도착)</th>
                                     <td colspan="3" class="text-left font-medium tracking-wide">
-                                        <span id="out_arrDate1">2026년 05월 12일 (금) 15:00</span> &nbsp;|&nbsp; <span id="out_arrFlight1" class="font-bold">7C106 / 제주-김포</span>
+                                        <span id="out_arrDate1">2026년 05월 22일 (금) 10:55</span> &nbsp;|&nbsp; <span id="out_arrFlight1" class="font-bold">RF311 / 간사이-청주</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -391,14 +343,21 @@
 
                     <!-- 직인란 -->
                     <div class="text-center text-lg mt-auto pt-4 mb-4 shrink-0">
-                        <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16px]">2026년 03월 22일</div>
+                        <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16px]">2026년 03월 23일</div>
                         
                         <div class="flex justify-end items-center pr-10">
                             <div class="text-right">
-                                <div class="mb-4 text-[20px] font-bold tracking-widest">요청 기관 : <span id="out_schoolName3" class="text-[22px] ml-3">사북중학교</span></div>
+                                <div class="mb-5 text-[20px] font-bold tracking-widest">요청 기관 : <span id="out_schoolName3" class="text-[22px] ml-3">사북중학교</span></div>
+                                
+                                <!-- 추가된 담당자 라인 (도장 공간을 피해 좌측 정렬되게 맞춤) -->
+                                <div class="flex items-center justify-end mb-2 mr-[82px]"> 
+                                    <span class="text-[17px] font-bold tracking-widest text-gray-700 mr-2">담 당 자 :</span>
+                                    <span id="out_teacher1" class="text-[18px] font-bold text-gray-800"></span>
+                                </div>
+                                
                                 <div class="flex items-center justify-end">
                                     <span class="text-[20px] font-bold tracking-widest mr-2">대 표 자 :</span>
-                                    <span id="out_principal1" class="text-[24px] font-black mr-2">홍 길 동</span>
+                                    <span id="out_principal1" class="text-[24px] font-black mr-2">임흥수</span>
                                     
                                     <div class="relative w-[70px] h-[70px] flex items-center justify-center ml-2">
                                         <span class="text-[16px] font-bold text-gray-800 z-10 relative bg-white px-1">(직인)</span>
@@ -429,11 +388,11 @@
                     <div class="mb-6 px-6 py-4 bg-gray-50 border-l-[4px] border-blue-400 shrink-0">
                         <div class="flex items-center text-[14px] mb-2 font-medium">
                             <span class="w-24 text-gray-600 font-bold">행 사 명 :</span>
-                            <span class="font-bold text-gray-800" id="out_eventName2">2026학년도 2학년 제주도 현장체험학습</span>
+                            <span class="font-bold text-gray-800" id="out_eventName2">2026학년도 사북중학교 2학년 국외현장체험학습(국외수학여행)</span>
                         </div>
                         <div class="flex items-center text-[14px] font-medium">
                             <span class="w-24 text-gray-600 font-bold">항공사명 :</span>
-                            <span class="font-bold text-gray-800" id="out_airline3">제주항공</span>
+                            <span class="font-bold text-gray-800" id="out_airline3">에어로케이 RF</span>
                         </div>
                     </div>
 
@@ -442,7 +401,6 @@
                         <h3 class="font-bold text-[17px] mb-3 tracking-wide flex items-center text-gray-800">
                             <i class="fas fa-info-circle text-blue-500 mr-2"></i>예약 취소 및 위약금(수수료) 안내
                         </h3>
-                        <!-- 폰트 크기 및 간격 축소하여 내용이 길어져도 박스 안에 잘 담기도록 수정 -->
                         <div class="p-4 border-[2px] border-gray-300 bg-white shadow-sm">
                             <div class="text-[13.5px] whitespace-pre-wrap text-gray-800 leading-[1.65] font-medium" id="out_rules"></div>
                         </div>
@@ -472,7 +430,6 @@
             
             container.appendChild(toast);
             
-            // 3초 후 요소 제거
             setTimeout(() => {
                 if(container.contains(toast)) {
                     container.removeChild(toast);
@@ -480,60 +437,31 @@
             }, 3000);
         }
 
-        // 브랜드별 데이터 정의
         const BRAND_DATA = {
-            tourmaker: {
-                name: '투어메이커',
-                logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8',
-                logoClass: 'h-8', // 공간 확보를 위해 h-10 -> h-8로 약간 축소
-                prefix: '투어-',
-                creditAgency: '투어메이커'
-            },
-            flyunity: {
-                name: '플라이유니티',
-                logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000',
-                logoClass: 'h-14', // 공간 확보를 위해 h-20 -> h-14로 축소
-                prefix: '플라이-',
-                creditAgency: '플라이유니티'
-            }
+            tourmaker: { name: '투어메이커' },
+            flyunity: { name: '플라이유니티' }
         };
 
         window.onload = function() {
-            // PDF에 세팅된 기본값을 유지하기 위해 자동 오늘 날짜 덮어쓰기 로직 제거
-            
-            // 초기 텍스트 에어리어 값 우측 반영
             document.getElementById('out_rules').innerText = document.getElementById('in_rules').value;
 
-            // HTML에 세팅된 날짜 값들을 화면에 즉시 렌더링
             updateDisplayDate();
             updateFlightDates();
             
-            // 브랜드 세팅
-            document.querySelectorAll('input[name="agency"]').forEach(radio => {
-                radio.addEventListener('change', (e) => switchBrand(e.target.value));
-            });
-            
-            // 초기값을 바탕으로 전체 미리보기 화면 업데이트
             const keys = [
-                'in_schoolName', 'in_principal', 'in_airline', 
+                'in_schoolName', 'in_principal', 'in_teacher', 'in_airline', 
                 'in_pax', 'in_eventName', 'in_depFlight', 'in_arrFlight'
             ];
             keys.forEach(key => {
                 const el = document.getElementById(key);
                 if (el) el.dispatchEvent(new Event('input'));
             });
-
-            switchBrand('tourmaker');
         };
-
-        function switchBrand(brandKey) {
-            const data = BRAND_DATA[brandKey];
-            // 시스템 푸터 문구 제어 코드 제거
-        }
 
         const mappings = {
             'in_schoolName': ['out_schoolName1', 'out_schoolName2', 'out_schoolName3'],
             'in_principal': ['out_principal1'],
+            'in_teacher': ['out_teacher1'], // 담당교사 맵핑 추가
             'in_airline': ['out_airline1', 'out_airline2', 'out_airline3'],
             'in_pax': ['out_pax1'],
             'in_eventName': ['out_eventName1', 'out_eventName2'],
@@ -627,16 +555,11 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     
-                    // 브랜드 라디오 버튼 업데이트
                     if(data.agency) {
                         const radio = document.querySelector(`input[name="agency"][value="${data.agency}"]`);
-                        if(radio) {
-                            radio.checked = true;
-                            switchBrand(data.agency);
-                        }
+                        if(radio) radio.checked = true;
                     }
 
-                    // 일반 인풋 값들 일괄 업데이트
                     const keys = [
                         'date', 'schoolName', 'principal', 'teacher', 
                         'airline', 'pax', 'eventName', 'depDate', 'depTime', 
@@ -647,7 +570,6 @@
                         if(data[key] !== undefined && document.getElementById(`in_${key}`)) {
                             const el = document.getElementById(`in_${key}`);
                             el.value = data[key];
-                            // 수동 이벤트 발생으로 우측 화면 동기화
                             el.dispatchEvent(new Event('input'));
                         }
                     });
@@ -658,7 +580,6 @@
                     showToast("지원하지 않는 형식의 파일입니다.", false);
                     console.error("JSON 파싱 에러:", err);
                 } finally {
-                    // 같은 파일을 다시 선택할 수 있도록 input 초기화
                     event.target.value = '';
                 }
             };
