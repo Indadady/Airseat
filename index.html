@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>투어메이커/플라이유니티 - 항공좌석 확보 요청 자동생성기</title>
     
-    <!-- Google Analytics 4 (투어메이커 통합 ID 탑재 완료) -->
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JLH9GD9SVR"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -17,7 +17,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts (Noto Sans KR 전면 통일) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome -->
@@ -36,23 +36,23 @@
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
         /* 테이블 스타일링 */
-        .doc-table th { background-color: #f3f4f6; padding: 12px 10px; font-weight: 700; border: 1px solid #d1d5db; }
-        .doc-table td { padding: 12px 10px; border: 1px solid #d1d5db; }
+        .doc-table th { background-color: #f3f4f6; padding: 10px 8px; font-weight: 700; border: 1px solid #d1d5db; }
+        .doc-table td { padding: 10px 8px; border: 1px solid #d1d5db; }
 
-        /* A4 1페이지 단위 스타일링 (미리보기용) */
+        /* A4 1페이지 단위 스타일링 (미리보기용) - 상단 여백 축소 */
         .a4-page {
             width: 210mm;
             min-height: 297mm;
             background-color: white;
             margin: 0 auto 20mm auto;
-            padding: 15mm 15mm 20mm 15mm; /* 하단 여백 추가 확보 */
+            padding: 10mm 15mm 20mm 15mm; /* 상단 여백 15mm -> 10mm로 축소하여 공간 확보 */
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             display: flex;
             flex-direction: column;
         }
 
-        /* 프린트(PDF 내보내기)용 CSS - 레이아웃, 여백, 쏠림 완벽 제어 */
+        /* 프린트(PDF 내보내기)용 CSS */
         @media print {
             html, body {
                 height: auto !important;
@@ -69,7 +69,7 @@
                 display: block !important;
             }
 
-            #input-panel, #main-nav {
+            #input-panel, #main-nav, #toast-container {
                 display: none !important;
             }
 
@@ -84,18 +84,17 @@
                 overflow: visible !important;
             }
 
-            /* 각 A4 페이지별 인쇄 강제 분할 및 중앙 정렬 설정 */
             .a4-page {
-                margin: 0 auto !important; /* ★ 95% 축소 시 왼쪽 쏠림 방지 (중앙 정렬 유지) */
-                padding: 12mm 15mm 18mm 15mm !important; /* ★ 하단 여백(18mm)으로 푸터 잘림 완벽 방지 */
+                margin: 0 auto !important; 
+                padding: 8mm 15mm 15mm 15mm !important; /* 인쇄 시 상하단 여백 최적화 */
                 box-shadow: none !important;
                 page-break-after: always !important; 
                 page-break-inside: avoid !important;
-                min-height: 296mm !important; /* A4 높이 고정으로 레이아웃 흐트러짐 차단 */
+                min-height: 296mm !important; 
                 height: 296mm !important;
                 display: flex !important;
                 flex-direction: column !important;
-                overflow: hidden !important; /* 물리적 페이지 밖으로 나가는 요소 차단 */
+                overflow: hidden !important; 
             }
             
             .a4-page:last-child {
@@ -110,15 +109,28 @@
                 margin: 0;
             }
         }
+
+        /* Toast Message Animation */
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px) translateX(-50%); }
+            10% { opacity: 1; transform: translateY(0) translateX(-50%); }
+            90% { opacity: 1; transform: translateY(0) translateX(-50%); }
+            100% { opacity: 0; transform: translateY(-20px) translateX(-50%); }
+        }
+        .toast-show {
+            animation: fadeInOut 3s forwards;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 pointer-events-none flex flex-col gap-2"></div>
 
     <!-- Top Navigation -->
     <nav id="main-nav" class="bg-white border-b border-gray-200 text-gray-800 p-4 flex justify-between items-center shadow-sm no-print z-10 shrink-0">
         <div class="flex items-center gap-3">
             <img src="https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8" alt="Tourmaker Logo" class="h-9 object-contain">
-            <!-- 군더더기 텍스트 삭제하고 깔끔하게 타이틀만 유지 -->
             <h1 class="text-xl font-bold tracking-tight border-l-2 border-gray-300 pl-3 ml-1 text-gray-800">항공좌석 요청 및 규정 확인서 시스템</h1>
         </div>
         <div>
@@ -132,10 +144,10 @@
     <div id="layout" class="flex flex-1 overflow-hidden">
         
         <!-- Left Panel: Data Input -->
-        <div id="input-panel" class="w-[420px] bg-white border-r border-gray-300 overflow-y-auto p-6 shadow-inner shrink-0">
+        <div id="input-panel" class="w-[420px] bg-white border-r border-gray-300 overflow-y-auto p-6 shadow-inner shrink-0 relative">
             
-            <!-- 주관 브랜드 선택 -->
-            <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <!-- 브랜드 선택 -->
+            <div class="mb-5 bg-slate-50 p-4 rounded-lg border border-slate-200">
                 <h2 class="text-sm font-bold text-gray-800 mb-3 flex items-center"><i class="fas fa-building mr-2 text-slate-600"></i>진행 주체 (브랜드) 선택</h2>
                 <div class="flex gap-4">
                     <label class="flex items-center cursor-pointer">
@@ -147,6 +159,21 @@
                         <span class="ml-2 text-sm font-medium">플라이유니티</span>
                     </label>
                 </div>
+            </div>
+
+            <!-- 데이터 관리 (템플릿 저장/불러오기) -->
+            <div class="mb-5 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h2 class="text-sm font-bold text-blue-800 mb-3 flex items-center"><i class="fas fa-save mr-2"></i>데이터 관리 (JSON 템플릿)</h2>
+                <div class="flex gap-2">
+                    <button onclick="saveTemplate()" class="flex-1 bg-white border border-blue-300 text-blue-700 py-1.5 rounded text-sm font-medium hover:bg-blue-100 transition flex items-center justify-center gap-1">
+                        <i class="fas fa-download"></i> 내보내기
+                    </button>
+                    <button onclick="document.getElementById('file-upload').click()" class="flex-1 bg-blue-600 text-white py-1.5 rounded text-sm font-medium hover:bg-blue-700 transition flex items-center justify-center gap-1">
+                        <i class="fas fa-upload"></i> 불러오기
+                    </button>
+                    <input type="file" id="file-upload" class="hidden" accept=".json" onchange="loadTemplate(event)">
+                </div>
+                <p class="text-[11px] text-blue-600 mt-2 text-center">자주 쓰는 학교/행사를 파일로 저장해두세요.</p>
             </div>
 
             <div class="mb-6">
@@ -161,7 +188,8 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">작성 일자</label>
-                            <input type="date" id="in_date" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                            <!-- PDF 기준 날짜 세팅 -->
+                            <input type="date" id="in_date" value="2026-03-23" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                         </div>
                     </div>
 
@@ -171,17 +199,64 @@
                         <div class="space-y-3">
                             <div>
                                 <label class="block text-xs font-medium text-gray-700 mb-1">학교(기관)명</label>
+                                <!-- PDF 기준 학교명 세팅 -->
                                 <input type="text" id="in_schoolName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 사북중학교" value="사북중학교">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">대표자(교장)</label>
-                                    <input type="text" id="in_principal" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="홍길동">
+                                    <!-- PDF 기준 대표자 세팅 -->
+                                    <input type="text" id="in_principal" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="임흥수">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-medium text-gray-700 mb-1">담당자(교사)</label>
-                                    <input type="text" id="in_teacher" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="김교사">
+                                    <input type="text" id="in_teacher" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="성함 입력" value="">
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 항공 정보 -->
+                    <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                        <h3 class="text-sm font-bold text-gray-800 mb-3">항공 및 일정 정보</h3>
+                        <div class="space-y-3">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">항공사명</label>
+                                    <!-- PDF 기준 항공사 세팅 -->
+                                    <input type="text" id="in_airline" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 제주항공" value="에어로케이 RF">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-700 mb-1">총 인원 (명)</label>
+                                    <!-- PDF 기준 인원 세팅 -->
+                                    <input type="number" id="in_pax" class="w-full border border-gray-300 rounded p-2 text-sm" value="59">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-700 mb-1">행사명(노선)</label>
+                                <!-- PDF 기준 행사명 세팅 -->
+                                <input type="text" id="in_eventName" class="w-full border border-gray-300 rounded p-2 text-sm" placeholder="예: 2026학년도 사북중학교 제주도 현장체험학습" value="2026학년도 사북중학교 2학년 국외현장체험학습(국외수학여행)">
+                            </div>
+                            
+                            <!-- 달력 + 시간 UI -->
+                            <div class="pt-2 border-t border-gray-200">
+                                <label class="block text-xs font-bold text-blue-800 mb-1">가는 날 (출발)</label>
+                                <div class="flex gap-2 mb-2">
+                                    <!-- PDF 기준 가는날 세팅 -->
+                                    <input type="date" id="in_depDate" value="2026-05-19" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <input type="time" id="in_depTime" value="15:50" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                </div>
+                                <input type="text" id="in_depFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C105 / 김포-제주)" value="RF318 / 청주-간사이">
+                            </div>
+
+                            <div class="pt-2 border-t border-gray-200">
+                                <label class="block text-xs font-bold text-blue-800 mb-1">오는 날 (도착)</label>
+                                <div class="flex gap-2 mb-2">
+                                    <!-- PDF 기준 오는날 세팅 -->
+                                    <input type="date" id="in_arrDate" value="2026-05-22" class="w-3/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                    <input type="time" id="in_arrTime" value="10:55" class="w-2/5 border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                                </div>
+                                <input type="text" id="in_arrFlight" class="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="편명 및 구간 (예: 7C106 / 제주-김포)" value="RF311 / 간사이-청주">
                             </div>
                         </div>
                     </div>
@@ -226,21 +301,25 @@
                         </div>
                     </div>
 
-                    <!-- 패널티 규정 입력 -->
+                    <!-- 패널티 규정 입력 (내용 압축) -->
                     <div>
-                        <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (2페이지 정보공유용)</label>
-                        <textarea id="in_rules" rows="12" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">1. 본 항공 좌석은 '단체(그룹) 항공권'으로, 일반 개인 항공권과는 다른 규정이 적용됨을 사전 안내해 드립니다.
+                        <label class="block text-sm font-bold text-blue-700 mb-1"><i class="fas fa-info-circle mr-1"></i>항공사 변경/취소 규정 (요약)</label>
+                        <textarea id="in_rules" rows="15" class="w-full border border-gray-300 rounded p-3 text-[13px] focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed bg-blue-50">■ 기본 확인 사항
+예약 대행: 본 항공권은 낙찰자가 발급 및 수속을 대행합니다.
+사전 선급금(데포짓): 단체 좌석 확보를 위해 1인당 100,000원 납입 조건으로 확약되었으며, 취소 시 아래 규정에 따라 항공사 실비 위약금으로 귀속됩니다.
 
-2. 좌석 확약(PNR 생성) 이후, 학교 측 사정으로 인한 전체 취소 또는 인원 변경 시 [제주항공]의 규정에 따른 수수료가 발생할 수 있습니다.
+1. 취소 수수료 규정 (항공사 위약금)
+출발 14일 이전 취소:
+- 예약 인원 10% 이내: 수수료 없음 (발권 전 한정)
+- 예약 인원 10% 초과: 미탑승 좌석당 100,000원 위약금 발생
+출발 14일 ~ 당일 취소: 항공 요금 전액 환불 불가 (100% 수수료)
 
-3. [제주항공 그룹 항공권 취소/위약금 규정]
-  - 출발일 기준 31일 전까지 취소 : 수수료 없음 (발권 전)
-  - 출발일 기준 30일 ~ 15일 전 취소 : 1인당 20,000원
-  - 출발일 기준 14일 ~ 출발 당일 취소 : 항공요금의 100% 수수료 발생 (환불 불가)
+2. 탑승자 명단 확정 (더블 체크 요망)
+이름 변경 절대 불가: 발권 후 단순 이름 변경(철자 수정 등) 시 취소 후 재예약으로 간주되어 위약금이 발생합니다.
+신분증 대조: 명단 제출 시 학생 이름이 신분증(여권 등)과 완벽히 일치하는지 반드시 확인 바랍니다.
 
-4. 탑승자 명단 확정(발권) 이후에는 단순 이름 변경이 불가하며, 취소 후 재예약으로 간주되어 동일한 수수료가 청구됩니다.
-
-5. 천재지변 등 불가항력적인 사유에 의한 교육부/교육청 지침 하달 시, 수수료 면제 여부는 해당 항공사 단체영업팀의 최종 결정에 따릅니다.</textarea>
+3. 천재지변 및 공식 지침 취소
+천재지변 또는 교육청 공식 취소 지침 하달 시 증빙 서류를 제출하여 항공사에 수수료 면제를 요청합니다. (최종 승인은 항공사 심사 결과에 따름)</textarea>
                     </div>
 
                 </div>
@@ -254,55 +333,54 @@
             <div class="a4-page" id="page-1">
                 <div class="relative z-10 flex flex-col h-full flex-1">
                     
-                    <!-- 공문서 헤더 -->
-                    <div class="flex justify-between items-start mb-8 shrink-0">
-                        <div class="flex items-center h-20"> 
-                            <!-- 로고 클래스는 JS에서 동적 관리 -->
+                    <!-- 공문서 헤더 (상단 여백 줄임 mb-8 -> mb-4) -->
+                    <div class="flex justify-between items-start mb-4 shrink-0">
+                        <div class="flex items-center h-14"> <!-- 로고 감싸는 영역 높이 축소 (h-20 -> h-14) -->
                             <img id="out_doc_logo_1" src="" alt="Company Logo" class="object-contain transition-all duration-300">
                         </div>
-                        <div class="text-right text-[13px] text-gray-600 font-medium pt-2">
+                        <div class="text-right text-[13px] text-gray-600 font-medium pt-1">
                             <div class="mb-1">문서번호 : <span id="out_docNo1" class="font-bold text-gray-800">투어-2026-0301</span></div>
                             <div>시행일자 : <span id="out_date_display_1">2026년 03월 22일</span></div>
                         </div>
                     </div>
 
-                    <!-- 문서 제목 -->
-                    <div class="text-center mb-10 shrink-0">
-                        <h1 class="text-3xl font-black tracking-widest border-b-[3px] border-gray-900 inline-block pb-3 px-8 mb-2">항공 단체좌석 요청서</h1>
+                    <!-- 문서 제목 (mb-10 -> mb-6) -->
+                    <div class="text-center mb-6 shrink-0 mt-4">
+                        <h1 class="text-[28px] font-black tracking-widest border-b-[3px] border-gray-900 inline-block pb-3 px-8 mb-2">항공 단체좌석 요청서</h1>
                     </div>
 
-                    <!-- 수발신 정보 -->
-                    <div class="text-[15.5px] mb-8 space-y-4 font-medium shrink-0">
+                    <!-- 수발신 정보 (mb-8 -> mb-6) -->
+                    <div class="text-[15.5px] mb-6 space-y-3 font-medium shrink-0">
                         <div class="flex items-center">
-                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm">수 신</span>
+                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm text-center">수 신</span>
                             <span class="flex-1 ml-4"><span id="out_airline1" class="font-bold underline underline-offset-4 text-blue-800">제주항공</span> 및 단체 대행사(<span id="out_agencyName1">투어메이커</span>) 귀하</span>
                         </div>
                         <div class="flex items-center">
-                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm">발 신</span>
+                            <span class="w-24 font-bold text-gray-800 tracking-widest bg-gray-100 px-3 py-1 rounded-sm text-center">발 신</span>
                             <span id="out_schoolName1" class="flex-1 ml-4 font-bold text-lg">사북중학교</span>
                         </div>
                     </div>
 
-                    <!-- 본문 내용 -->
-                    <div class="text-[15px] leading-relaxed mb-8 shrink-0 border-t border-gray-200 pt-6">
+                    <!-- 본문 내용 (mb-8 -> mb-5) -->
+                    <div class="text-[15px] leading-relaxed mb-5 shrink-0 border-t border-gray-200 pt-5">
                         1. 귀 사의 무궁한 발전을 기원합니다.<br>
                         2. 본 기관(<span id="out_schoolName2" class="font-bold">사북중학교</span>)은 원활한 행사 진행을 위하여 아래와 같이 <span class="font-bold text-blue-700">그룹 항공 좌석 확보를 정식으로 요청</span>합니다.
                     </div>
 
                     <!-- 일정 표 -->
-                    <div class="mb-6 shrink-0">
-                        <h3 class="font-bold text-[17px] mb-3 tracking-wide text-gray-800">[ 좌석 요청 내역 ]</h3>
-                        <table class="w-full border-collapse doc-table text-[14.5px] text-center">
+                    <div class="mb-5 shrink-0">
+                        <h3 class="font-bold text-[16px] mb-2 tracking-wide text-gray-800">[ 좌석 요청 내역 ]</h3>
+                        <table class="w-full border-collapse doc-table text-[14px] text-center">
                             <tbody>
                                 <tr>
                                     <th class="w-1/4">행사명</th>
-                                    <td colspan="3" class="text-left font-bold text-[15px] text-blue-800" id="out_eventName1">2026학년도 2학년 제주도 현장체험학습</td>
+                                    <td colspan="3" class="text-left font-bold text-[14.5px] text-blue-800" id="out_eventName1">2026학년도 2학년 제주도 현장체험학습</td>
                                 </tr>
                                 <tr>
                                     <th>이용 항공사</th>
-                                    <td class="font-bold text-[15px]" id="out_airline2">제주항공</td>
+                                    <td class="font-bold text-[14.5px]" id="out_airline2">제주항공</td>
                                     <th>탑승 예정 인원</th>
-                                    <td class="font-bold text-[15.5px] text-blue-700"><span id="out_pax1">45</span> 명</td>
+                                    <td class="font-bold text-[15px] text-blue-700"><span id="out_pax1">45</span> 명</td>
                                 </tr>
                                 <tr>
                                     <th>가는 편 (출발)</th>
@@ -321,24 +399,23 @@
                     </div>
 
                     <!-- 주의사항 및 동의 -->
-                    <div class="mb-8 p-4 bg-gray-50 border border-gray-300 rounded-sm text-[14.5px] font-medium leading-relaxed text-gray-800">
+                    <div class="mb-5 p-4 bg-gray-50 border border-gray-300 rounded-sm text-[14px] font-medium leading-relaxed text-gray-800">
                         <i class="fas fa-check-circle text-blue-600 mr-2"></i>상기 일정의 그룹 항공 좌석 확보를 공식 요청하며, 첨부된 <strong>[항공 그룹 예약 규정 확인서]</strong>의 내용을 참고 및 확인합니다.
                     </div>
 
-                    <!-- 직인란 (하단으로 안전하게 밀어내기 & 위로 살짝 당김) -->
+                    <!-- 직인란 -->
                     <div class="text-center text-lg mt-auto pt-4 mb-2 shrink-0">
-                        <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16.5px]">2026년 03월 22일</div>
+                        <div id="out_date_display_2" class="mb-6 font-bold tracking-widest text-[16px]">2026년 03월 22일</div>
                         
                         <div class="flex justify-end items-center pr-10">
                             <div class="text-right">
-                                <div class="mb-4 text-[22px] font-bold tracking-widest">요청 기관 : <span id="out_schoolName3" class="text-[24px] ml-3">사북중학교</span></div>
+                                <div class="mb-4 text-[20px] font-bold tracking-widest">요청 기관 : <span id="out_schoolName3" class="text-[22px] ml-3">사북중학교</span></div>
                                 <div class="flex items-center justify-end">
-                                    <span class="text-[22px] font-bold tracking-widest mr-2">대 표 자 :</span>
-                                    <span id="out_principal1" class="text-[26px] font-black mr-2">홍 길 동</span>
+                                    <span class="text-[20px] font-bold tracking-widest mr-2">대 표 자 :</span>
+                                    <span id="out_principal1" class="text-[24px] font-black mr-2">홍 길 동</span>
                                     
-                                    <!-- 도장 찍는 곳 통합 디자인 -->
-                                    <div class="relative w-[75px] h-[75px] flex items-center justify-center ml-2">
-                                        <span class="text-[17px] font-bold text-gray-800 z-10 relative bg-white px-1">(직인)</span>
+                                    <div class="relative w-[70px] h-[70px] flex items-center justify-center ml-2">
+                                        <span class="text-[16px] font-bold text-gray-800 z-10 relative bg-white px-1">(직인)</span>
                                         <div class="absolute inset-0 border-[2px] border-dashed border-gray-400 rounded-full no-print"></div>
                                     </div>
                                 </div>
@@ -346,7 +423,7 @@
                         </div>
                     </div>
                     
-                    <!-- Footer (1페이지 - 인쇄 시 잘림을 완벽히 방지하는 여백) -->
+                    <!-- Footer (1페이지) -->
                     <div class="mt-4 border-t border-gray-200 pt-3 pb-1 text-center w-full shrink-0">
                         <p id="footer-credit-1" class="text-[12px] text-[#6c757d] font-medium m-0">
                             [System Powered by TOURMAKER] 본 서류는 <strong>투어메이커</strong>의 기획과 트래블 테크 기술 제휴로 제작되었습니다.
@@ -358,48 +435,48 @@
             <!-- ===================== [페이지 2] 항공사 규정 정보 공유 ===================== -->
             <div class="a4-page" id="page-2">
                 <div class="relative z-10 flex flex-col h-full flex-1">
-                    <!-- 공문서 헤더 (페이지 2) -->
-                    <div class="flex justify-between items-start mb-10 shrink-0">
-                        <div class="flex items-center h-20"> 
-                            <!-- 로고 (투어 h-10, 플라이 h-20) -->
+                    <!-- 공문서 헤더 (페이지 2 - 상단 여백 축소) -->
+                    <div class="flex justify-between items-start mb-6 shrink-0">
+                        <div class="flex items-center h-14"> 
                             <img id="out_doc_logo_2" src="" alt="Company Logo" class="object-contain transition-all duration-300">
                         </div>
-                        <div class="text-right text-[12px] text-gray-500 font-medium pt-2">
+                        <div class="text-right text-[12px] text-gray-500 font-medium pt-1">
                             <div class="mb-1">문서번호 : <span id="out_docNo2" class="">투어-2026-0301</span></div>
                             <div>참고 문서 (Page 2)</div>
                         </div>
                     </div>
 
                     <!-- 문서 제목 -->
-                    <div class="text-center mb-10 shrink-0">
+                    <div class="text-center mb-8 shrink-0 mt-2">
                         <h2 class="text-[22px] font-black tracking-widest border-b-[2px] border-gray-800 inline-block pb-2 px-6 mb-2 text-gray-800">항공 그룹 예약 규정 확인서</h2>
                     </div>
 
                     <!-- 행사 개요 요약 -->
-                    <div class="mb-8 px-6 py-4 bg-gray-50 border-l-[4px] border-blue-400 shrink-0">
-                        <div class="flex items-center text-[14.5px] mb-2 font-medium">
+                    <div class="mb-6 px-6 py-4 bg-gray-50 border-l-[4px] border-blue-400 shrink-0">
+                        <div class="flex items-center text-[14px] mb-2 font-medium">
                             <span class="w-24 text-gray-600 font-bold">행 사 명 :</span>
                             <span class="font-bold text-gray-800" id="out_eventName2">2026학년도 2학년 제주도 현장체험학습</span>
                         </div>
-                        <div class="flex items-center text-[14.5px] font-medium">
+                        <div class="flex items-center text-[14px] font-medium">
                             <span class="w-24 text-gray-600 font-bold">항공사명 :</span>
                             <span class="font-bold text-gray-800" id="out_airline3">제주항공</span>
                         </div>
                     </div>
 
-                    <!-- ★ 패널티 규정 ★ -->
-                    <div class="mb-8 shrink-0">
-                        <h3 class="font-bold text-[18px] mb-4 tracking-wide flex items-center text-gray-800">
+                    <!-- ★ 패널티 규정 (공간 충분히 확보) ★ -->
+                    <div class="mb-6 shrink-0">
+                        <h3 class="font-bold text-[17px] mb-3 tracking-wide flex items-center text-gray-800">
                             <i class="fas fa-info-circle text-blue-500 mr-2"></i>예약 취소 및 위약금(수수료) 안내
                         </h3>
-                        <div class="p-6 border-[2px] border-gray-300 bg-white shadow-sm">
-                            <div class="text-[15.5px] whitespace-pre-wrap text-gray-800 leading-[2.0] font-medium" id="out_rules"></div>
+                        <!-- 패딩 약간 조절하여 내용 많아져도 버틸 수 있게 함 -->
+                        <div class="p-5 border-[2px] border-gray-300 bg-white shadow-sm">
+                            <div class="text-[15px] whitespace-pre-wrap text-gray-800 leading-[1.8] font-medium" id="out_rules"></div>
                         </div>
                     </div>
 
                     <!-- 부드러운 맺음말 -->
-                    <div class="mt-auto pt-6 border-t-[2px] border-gray-300 shrink-0">
-                        <p class="text-[14.5px] font-medium text-gray-600 leading-relaxed text-center py-4 bg-gray-50 rounded-sm">
+                    <div class="mt-auto pt-5 border-t-[2px] border-gray-300 shrink-0">
+                        <p class="text-[14px] font-medium text-gray-600 leading-relaxed text-center py-4 bg-gray-50 rounded-sm">
                             본 문서는 항공사 단체 예약 진행 시 적용되는 일반적인 규정을 사전에 공유해 드리기 위한 참고 자료입니다.<br>
                             안전하고 원활한 행사 진행을 위해 최선을 다하겠습니다.
                         </p>
@@ -418,45 +495,70 @@
     </div>
 
     <script>
+        // 커스텀 토스트 알림 함수
+        function showToast(message, isSuccess = true) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = isSuccess ? 'bg-gray-800' : 'bg-red-600';
+            const icon = isSuccess ? '<i class="fas fa-check-circle text-green-400 mr-2"></i>' : '<i class="fas fa-exclamation-circle text-white mr-2"></i>';
+            
+            toast.className = `toast-show ${bgColor} text-white px-6 py-3 rounded shadow-lg font-medium text-sm flex items-center`;
+            toast.innerHTML = `${icon} ${message}`;
+            
+            container.appendChild(toast);
+            
+            // 3초 후 요소 제거
+            setTimeout(() => {
+                if(container.contains(toast)) {
+                    container.removeChild(toast);
+                }
+            }, 3000);
+        }
+
         // 브랜드별 데이터 정의
         const BRAND_DATA = {
             tourmaker: {
                 name: '투어메이커',
                 logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEitI-Z-hD82keOJ1AqHw-VTZjpw2U-O5UjtV9h3zblyG0wjsVfBWe9X9o0Q_Spctrt7krkd9qXO0xKTmGJLw4gyMZrRqpshKMFttnyx6OcC8-IGz3XLUZpGQOnRqVdol8jz5HuoDLqsEifnVRhcjUJHm13Sz8JrX9aPswMNUwZPvGtJEnQjhc2PiXlo-B8',
-                logoClass: 'h-10', // 투어메이커는 심플하고 단정하게 작게 (h-10)
+                logoClass: 'h-8', // 공간 확보를 위해 h-10 -> h-8로 약간 축소
                 prefix: '투어-',
                 creditAgency: '투어메이커'
             },
             flyunity: {
                 name: '플라이유니티',
                 logoUrl: 'https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000',
-                logoClass: 'h-20', // 플라이유니티는 확실히 눈에 띄게 (h-20)
+                logoClass: 'h-14', // 공간 확보를 위해 h-20 -> h-14로 축소
                 prefix: '플라이-',
                 creditAgency: '플라이유니티'
             }
         };
 
         window.onload = function() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            
-            // 기본 날짜 세팅
-            document.getElementById('in_date').value = `${year}-${month}-${day}`;
-            document.getElementById('in_depDate').value = `${year}-${month}-${parseInt(day)+14 > 30 ? '28' : String(parseInt(day)+14).padStart(2, '0')}`;
-            document.getElementById('in_arrDate').value = `${year}-${month}-${parseInt(day)+16 > 30 ? '30' : String(parseInt(day)+16).padStart(2, '0')}`;
+            // PDF에 세팅된 기본값을 유지하기 위해 자동 오늘 날짜 덮어쓰기 로직 제거
             
             // 초기 텍스트 에어리어 값 우측 반영
             document.getElementById('out_rules').innerText = document.getElementById('in_rules').value;
 
+            // HTML에 세팅된 날짜 값들을 화면에 즉시 렌더링
             updateDisplayDate();
             updateFlightDates();
             
+            // 브랜드 세팅
             document.querySelectorAll('input[name="agency"]').forEach(radio => {
                 radio.addEventListener('change', (e) => switchBrand(e.target.value));
             });
             
+            // 초기값을 바탕으로 전체 미리보기 화면 업데이트
+            const keys = [
+                'in_docNo', 'in_schoolName', 'in_principal', 'in_airline', 
+                'in_pax', 'in_eventName', 'in_depFlight', 'in_arrFlight'
+            ];
+            keys.forEach(key => {
+                const el = document.getElementById(key);
+                if (el) el.dispatchEvent(new Event('input'));
+            });
+
             switchBrand('tourmaker');
         };
 
@@ -513,6 +615,7 @@
                 const dateObj = new Date(dateVal);
                 const format = `${dateObj.getFullYear()}년 ${String(dateObj.getMonth() + 1).padStart(2, '0')}월 ${String(dateObj.getDate()).padStart(2, '0')}일`;
                 document.getElementById('out_date_display_1').innerText = format;
+                document.getElementById('out_date_display_2').innerText = format;
             }
         }
 
@@ -553,6 +656,84 @@
             document.getElementById('out_rules').innerText = e.target.value;
         });
 
+        // ==========================================
+        // 템플릿 데이터 저장 및 불러오기 (JSON)
+        // ==========================================
+        function saveTemplate() {
+            const data = {
+                agency: document.querySelector('input[name="agency"]:checked').value,
+                docNo: document.getElementById('in_docNo').value,
+                date: document.getElementById('in_date').value,
+                schoolName: document.getElementById('in_schoolName').value,
+                principal: document.getElementById('in_principal').value,
+                teacher: document.getElementById('in_teacher').value,
+                airline: document.getElementById('in_airline').value,
+                pax: document.getElementById('in_pax').value,
+                eventName: document.getElementById('in_eventName').value,
+                depDate: document.getElementById('in_depDate').value,
+                depTime: document.getElementById('in_depTime').value,
+                depFlight: document.getElementById('in_depFlight').value,
+                arrDate: document.getElementById('in_arrDate').value,
+                arrTime: document.getElementById('in_arrTime').value,
+                arrFlight: document.getElementById('in_arrFlight').value,
+                rules: document.getElementById('in_rules').value
+            };
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `항공요청템플릿_${data.schoolName || '기본'}.json`);
+            dlAnchorElem.click();
+            
+            showToast("JSON 템플릿이 성공적으로 다운로드되었습니다.");
+        }
+
+        function loadTemplate(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // 브랜드 라디오 버튼 업데이트
+                    if(data.agency) {
+                        const radio = document.querySelector(`input[name="agency"][value="${data.agency}"]`);
+                        if(radio) {
+                            radio.checked = true;
+                            switchBrand(data.agency);
+                        }
+                    }
+
+                    // 일반 인풋 값들 일괄 업데이트
+                    const keys = [
+                        'docNo', 'date', 'schoolName', 'principal', 'teacher', 
+                        'airline', 'pax', 'eventName', 'depDate', 'depTime', 
+                        'depFlight', 'arrDate', 'arrTime', 'arrFlight', 'rules'
+                    ];
+                    
+                    keys.forEach(key => {
+                        if(data[key] !== undefined && document.getElementById(`in_${key}`)) {
+                            const el = document.getElementById(`in_${key}`);
+                            el.value = data[key];
+                            // 수동 이벤트 발생으로 우측 화면 동기화
+                            el.dispatchEvent(new Event('input'));
+                        }
+                    });
+                    
+                    showToast("템플릿 데이터를 성공적으로 불러왔습니다.");
+                    
+                } catch(err) {
+                    showToast("지원하지 않는 형식의 파일입니다.", false);
+                    console.error("JSON 파싱 에러:", err);
+                } finally {
+                    // 같은 파일을 다시 선택할 수 있도록 input 초기화
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
     </script>
 </body>
 </html>
