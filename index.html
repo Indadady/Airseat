@@ -295,17 +295,19 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="fu-label">1인 데포짓 금액 (원)</label>
-                                    <input type="number" id="in_fly_deposit" class="fu-input font-bold text-blue-700 bg-blue-50" placeholder="100000" oninput="calcFlyDeposit()">
+                                    <input type="text" id="in_fly_deposit" class="fu-input font-bold text-blue-700 bg-blue-50" placeholder="100,000" oninput="handleNumberFormat(event); calcFlyDeposit()">
                                 </div>
                                 <div>
                                     <label class="fu-label">예치 기한 (문구)</label>
                                     <input type="text" id="in_fly_deposit_due" class="fu-input" placeholder="2026년00월 00(0요일) 00시까지">
                                 </div>
                             </div>
-                            <div class="grid grid-cols-3 gap-3">
-                                <div><label class="fu-label">허들 조건 (%)</label><input type="number" id="in_fly_hurdle" class="fu-input" placeholder="80"></div>
-                                <div><label class="fu-label">명단 제출 비율 (%)</label><input type="number" id="in_fly_name_percent" class="fu-input" placeholder="50"></div>
-                                <div><label class="fu-label">명단 제출 기한</label><input type="text" id="in_fly_name_due" class="fu-input" placeholder="2026년 00월 00일"></div>
+                            <div class="mt-3">
+                                <label class="fu-label">허들 조건 (%)</label>
+                                <input type="number" id="in_fly_hurdle" class="fu-input w-1/3 mb-3" placeholder="80">
+                                
+                                <label class="fu-label">3번 항목 (기타 요청사항 / 명단 제출 특약 등)</label>
+                                <textarea id="in_fly_remarks" rows="2" class="fu-input" placeholder="예) 2026년 05월 17일까지 명단 50% 제출 조건입니다. (한글 명단도 무관)"></textarea>
                             </div>
                         </div>
                     </div>
@@ -318,8 +320,8 @@
                                 <textarea id="in_fly_schedule" rows="4" class="fu-input font-mono text-xs"></textarea>
                             </div>
                             <div class="grid grid-cols-3 gap-3">
-                                <div><label class="fu-label">1인 항공료</label><input type="text" id="in_fly_fare" class="fu-input" placeholder="300,000"></div>
-                                <div><label class="fu-label">TAX 등</label><input type="text" id="in_fly_tax" class="fu-input" placeholder="100,000"></div>
+                                <div><label class="fu-label">1인 항공료</label><input type="text" id="in_fly_fare" class="fu-input" placeholder="300,000" oninput="handleNumberFormat(event); updateAllPreviews()"></div>
+                                <div><label class="fu-label">TAX 등</label><input type="text" id="in_fly_tax" class="fu-input" placeholder="100,000" oninput="handleNumberFormat(event); updateAllPreviews()"></div>
                                 <div><label class="fu-label">총 인원 (명)</label><input type="number" id="in_fly_pax" class="fu-input bg-yellow-50 font-bold" placeholder="19" oninput="calcFlyDeposit()"></div>
                             </div>
                             <div class="mt-2 text-right">
@@ -480,41 +482,41 @@
 
             <!-- ===================== [미리보기: 플라이유니티 전용 PAGE] ===================== -->
             <div class="a4-page page-fly hidden-page" id="page-flyunity">
-                <!-- Header (Logo & Center Title) -->
-                <div class="mb-8 shrink-0 relative">
-                    <!-- 확대된 플라이유니티 로고 (좌측 상단) -->
-                    <div class="mb-5 pt-1 pl-1">
-                        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000" alt="FLY UNITY" class="h-[60px] object-contain">
-                    </div>
-                    
-                    <!-- 중앙 정렬된 DEPOSIT INVOICE 타이틀 -->
-                    <div class="text-center pt-2">
-                        <h2 class="text-[28px] font-black text-gray-800 leading-tight inline-block border-b-[4px] border-sky-900 pb-2 px-10">
+                <!-- Header (Title on Left, Logo on Right) -->
+                <div class="mb-6 shrink-0 flex justify-between items-center pt-2">
+                    <!-- 타이틀 (좌측 정렬로 공간 확보하여 간섭 원천 차단) -->
+                    <div class="flex-1 pr-4">
+                        <h2 class="text-[28px] font-black text-gray-800 leading-tight inline-block border-b-[4px] border-sky-900 pb-1.5 pr-10">
                             <span id="out_fly_airline_title" class="text-sky-800"></span> DEPOSIT INVOICE
                         </h2>
+                    </div>
+                    
+                    <!-- 확대된 플라이유니티 로고 (우측 상단 배치) -->
+                    <div class="shrink-0 pl-2">
+                        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000" alt="FLY UNITY" class="h-[105px] object-contain">
                     </div>
                 </div>
 
                 <!-- Meta Info -->
-                <div class="mb-6 text-[14px] leading-[1.8] font-medium shrink-0">
+                <div class="mb-4 text-[14px] leading-[1.7] font-medium shrink-0">
                     <div class="flex"><span class="w-[60px] font-bold">수 신 :</span> <span id="out_fly_receiver"></span></div>
                     <div class="flex"><span class="w-[60px] font-bold">일 자 :</span> <span class="out_common_date_dot font-mono"></span></div>
                     <div class="flex"><span class="w-[60px] font-bold">참 조 :</span> <span id="out_fly_ref"></span></div>
                     <div class="flex"><span class="w-[60px] font-bold">발 신 :</span> <span>(주)플라이유니티</span> <span id="out_fly_sender" class="ml-1 font-bold"></span> <span>드림</span></div>
-                    <div class="flex mt-3 pt-3 border-t border-gray-300">
+                    <div class="flex mt-2 pt-2 border-t border-gray-300">
                         <span class="w-[60px] font-bold">제 목 :</span> 
                         <span id="out_fly_title" class="font-bold text-[15px] underline underline-offset-4 decoration-sky-300"></span>
                     </div>
                 </div>
 
                 <!-- Intro -->
-                <div class="mb-5 text-[14px] font-medium leading-relaxed shrink-0">
+                <div class="mb-3 text-[14px] font-medium leading-relaxed shrink-0">
                     좌석의 원활한 수급을 위하여 ㈜플라이유니티와 <span id="out_fly_receiver2" class="font-bold"></span>은(는) 아래와 같이 항공좌석의 수급에 관한 계약을 체결합니다.
                 </div>
-                <div class="text-center font-bold mb-6 text-[15px] shrink-0">- 아 래 -</div>
+                <div class="text-center font-bold mb-4 text-[15px] shrink-0">- 아 래 -</div>
 
                 <!-- Body (List) -->
-                <div class="text-[14px] leading-[1.8] space-y-6 font-medium">
+                <div class="text-[14px] leading-[1.7] space-y-4 font-medium">
                     <p class="pl-5 relative">
                         <span class="absolute left-0 font-bold">1.</span>
                         <span id="out_fly_receiver3" class="font-bold text-sky-800"></span>은(는) 항공 좌석 및 상품을 예약 후 해당 항공편의 좌석이 확보될 경우 플라이유니티에게 1인당 Deposit <strong class="text-[15px] text-red-600 underline underline-offset-2">\<span id="out_fly_deposit"></span>/인</strong>을 <strong class="text-[15px]"><span id="out_fly_deposit_due"></span></strong> 예치하여야 하며, 예치되지 않을 경우 확보된 좌석은 통보 없이 자동 취소됩니다.
@@ -526,27 +528,26 @@
                         해당 FLT/CLS 계약 좌석의 <strong class="text-[15px] text-red-600"><span id="out_fly_hurdle"></span>% 허들조건</strong>이며, 미달 시 Deposit 환불 불가입니다.
                     </p>
 
-                    <p class="pl-5 relative">
+                    <p id="fly_wrap_remarks" class="pl-5 relative">
                         <span class="absolute left-0 font-bold">3.</span>
-                        예) <strong><span id="out_fly_name_due"></span></strong>까지 명단 <strong><span id="out_fly_name_percent"></span>% 제출 조건</strong>입니다. (한글 명단도 무관)<br>
-                        <span class="text-[13px] text-gray-500">(네임, 발권티엘은 데포 이후 연락드리겠습니다) 2번 외 그 밖의 요청 넣을 기타란으로</span>
+                        <span id="out_fly_remarks" class="whitespace-pre-wrap text-[14px] leading-relaxed block"></span>
                     </p>
 
                     <div class="pl-5 relative">
-                        <span class="absolute left-0 font-bold">4.</span>
+                        <span id="fly_num_schedule" class="absolute left-0 font-bold">4.</span>
                         <strong>스케줄:</strong>
                         <pre id="out_fly_schedule" class="font-mono text-[12px] bg-gray-50 p-3 mt-1 mb-2 whitespace-pre-wrap border border-gray-200 leading-[1.4]"></pre>
                         <p>1인 항공료 <strong><span id="out_fly_fare"></span></strong> + TAX <strong><span id="out_fly_tax"></span></strong> (월유류세기준)</p>
                     </div>
 
                     <p class="pl-5 relative text-[16px]">
-                        <span class="absolute left-0 font-bold">5.</span>
+                        <span id="fly_num_total" class="absolute left-0 font-bold">5.</span>
                         <strong>DEPOSIT 총금액 : <span class="text-[18px] text-red-600 font-black">\<span id="out_fly_total"></span></span></strong> 
                         <span class="text-[14px] text-gray-600 font-normal">(\<span id="out_fly_deposit2"></span> X <span id="out_fly_pax"></span>명)</span>
                     </p>
 
                     <div class="pl-5 relative mb-4">
-                        <span class="absolute left-0 font-bold">6.</span>
+                        <span id="fly_num_account" class="absolute left-0 font-bold">6.</span>
                         <p><strong>예치금 계좌 : <span id="out_fly_account" class="text-[16px] text-sky-800 font-black tracking-wide ml-1"></span></strong></p>
                         <p class="font-bold mt-1">예치금 환급 규정을 꼭 확인하신 후 송금 부탁드리며 송금 후 연락 주시기 바랍니다.</p>
                     </div>
@@ -590,15 +591,15 @@
                 agency: "flyunity", date: "2026-03-27", 
                 fly_receiver: "강릉 뉴동방관광", fly_ref: "담당자님", fly_sender: "대표", 
                 fly_airline: "CZ", fly_title: "2026.06.17(수)~21(일) CZ 데포짓 청구 건",
-                fly_deposit: "100000", fly_deposit_due: "2026년04월 01일(수) 15시까지", fly_hurdle: "80", 
-                fly_name_due: "2026년 05월 17일까지", fly_name_percent: "50",
+                fly_deposit: "100,000", fly_deposit_due: "2026년04월 01일(수) 15시까지", fly_hurdle: "80", 
+                fly_remarks: "예) 2026년 05월 17일까지 명단 50% 제출 조건입니다. (한글 명단도 무관)\n(네임, 발권티엘은 데포 이후 연락드리겠습니다) 기타 2번 외 요청사항",
                 fly_schedule: "0.20GROUPAM/CDCEGC NM0 PH2L34/CZ\n1. CZ340 GWE17JUN ICNCAN HK19 0940 1230 E 1 T2\n2. CZ3061 GSU21JUN CANICN HK19 1050 1525 E T21",
                 fly_fare: "350,000", fly_tax: "120,000", fly_pax: "19", 
                 fly_account: "우리은행 1005-000-000000 주식회사 플라이유니티"
             },
             blank: {
                 date: "2026-03-27", schoolName: "", principal: "", teacher: "", airline: "", pax: "", eventName: "", depDate: "", depTime1: "", arrTime1: "", depFlight: "", arrDate: "", depTime2: "", arrTime2: "", arrFlight: "", rules: "",
-                fly_receiver: "", fly_ref: "", fly_sender: "", fly_airline: "", fly_title: "", fly_deposit: "", fly_deposit_due: "", fly_hurdle: "", fly_name_due: "", fly_name_percent: "", fly_schedule: "", fly_fare: "", fly_tax: "", fly_pax: "", fly_account: ""
+                fly_receiver: "", fly_ref: "", fly_sender: "", fly_airline: "", fly_title: "", fly_deposit: "", fly_deposit_due: "", fly_hurdle: "", fly_remarks: "", fly_schedule: "", fly_fare: "", fly_tax: "", fly_pax: "", fly_account: ""
             }
         };
 
@@ -717,8 +718,7 @@
                 'in_fly_title': ['out_fly_title'],
                 'in_fly_deposit_due': ['out_fly_deposit_due'],
                 'in_fly_hurdle': ['out_fly_hurdle'],
-                'in_fly_name_due': ['out_fly_name_due'],
-                'in_fly_name_percent': ['out_fly_name_percent'],
+                'in_fly_remarks': ['out_fly_remarks'],
                 'in_fly_schedule': ['out_fly_schedule'],
                 'in_fly_fare': ['out_fly_fare'],
                 'in_fly_tax': ['out_fly_tax'],
@@ -736,12 +736,42 @@
             document.getElementById('out_fly_deposit').innerText = formattedDeposit;
             document.getElementById('out_fly_deposit2').innerText = formattedDeposit;
             
+            // 3번 항목(기타 요청사항) 유무에 따른 동적 번호 재정렬
+            const remarksText = document.getElementById('in_fly_remarks').value.trim();
+            const wrapRemarks = document.getElementById('fly_wrap_remarks');
+            const numSchedule = document.getElementById('fly_num_schedule');
+            const numTotal = document.getElementById('fly_num_total');
+            const numAccount = document.getElementById('fly_num_account');
+
+            if (remarksText === "") {
+                wrapRemarks.style.display = 'none'; // 3번 숨김
+                numSchedule.innerText = "3.";
+                numTotal.innerText = "4.";
+                numAccount.innerText = "5.";
+            } else {
+                wrapRemarks.style.display = 'block'; // 3번 표시
+                numSchedule.innerText = "4.";
+                numTotal.innerText = "5.";
+                numAccount.innerText = "6.";
+            }
+
             calcFlyDeposit();
+        }
+
+        // 숫자 입력시 콤마 자동 생성 함수 (새로 추가)
+        function handleNumberFormat(e) {
+            let val = e.target.value.replace(/[^0-9]/g, '');
+            if(val) {
+                e.target.value = Number(val).toLocaleString('ko-KR');
+            } else {
+                e.target.value = '';
+            }
         }
 
         // 데포짓 총액 계산
         function calcFlyDeposit() {
-            const dep = Number(document.getElementById('in_fly_deposit').value) || 0;
+            const depStr = document.getElementById('in_fly_deposit').value || "0";
+            const dep = Number(depStr.replace(/,/g, ''));
             const pax = Number(document.getElementById('in_fly_pax').value) || 0;
             const total = dep * pax;
             
