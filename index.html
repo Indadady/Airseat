@@ -346,11 +346,6 @@
             <!-- ===================== [미리보기: 투어메이커 PAGE 1] ===================== -->
             <div class="a4-page page-tm" id="page-tm-1">
                 <div class="relative z-10 flex flex-col h-full flex-1">
-                    
-                    <!-- 브랜드 로고 -->
-                    <div class="absolute top-0 left-0 flex items-center pt-2">
-                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHfgIX70O5k6Anuo0UgALIdaG9jSga9auHu3uyz0uEirylGPAJnjN_qQbvEGMUvPqUQf_g9FMNUHRxlDcUBf4vZ3Mpy4TnA9WxbmzWYK11gt2zuy_Irl4wctNFjcjLyPo0GPXV792o_J7L9guRMuDfeC1gy7USwywjYbECZgzcsHybuGRRAXAnO1eNmP8/s320/logo.png" alt="투어메이커" class="h-[40px] object-contain opacity-80">
-                    </div>
 
                     <!-- 문서 제목 -->
                     <div class="text-center mb-6 shrink-0 mt-12">
@@ -482,18 +477,18 @@
 
             <!-- ===================== [미리보기: 플라이유니티 전용 PAGE] ===================== -->
             <div class="a4-page page-fly hidden-page" id="page-flyunity">
-                <!-- Header (Title on Left, Logo on Right) -->
-                <div class="mb-6 shrink-0 flex justify-between items-center pt-2">
-                    <!-- 타이틀 (좌측 정렬로 공간 확보하여 간섭 원천 차단) -->
-                    <div class="flex-1 pr-4">
-                        <h2 class="text-[28px] font-black text-gray-800 leading-tight inline-block border-b-[4px] border-sky-900 pb-1.5 pr-10">
-                            <span id="out_fly_airline_title" class="text-sky-800"></span> DEPOSIT INVOICE
-                        </h2>
+                <!-- Header (Wide Logo Full Width & Title Centered) -->
+                <div class="mb-5 shrink-0 border-b-[3px] border-sky-900 pb-4 pt-1">
+                    <!-- 제공된 가로형 플라이유니티 로고 (상단 꽉차게 배치) -->
+                    <div class="w-full flex justify-center mb-4">
+                        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhEFpULeLVDfwoBXtetHc7RKdxqUT_BAEnTz9ZbeFDZrJKHEMK7d-jxaGFcT_x-Zd25Ha2DmhJ62-RiL3XClK1tzWkMLOMt-2boTODKJY0reo5PjPaAClELiXDOkmRlyM1DruP58WPJTJyJPZpVP7qrn-llaZ-E34U2PJUi4N9puunD5OY2ia1J2hOAvl8=w640-h115" alt="FLY UNITY" class="w-full h-auto object-contain">
                     </div>
                     
-                    <!-- 확대된 플라이유니티 로고 (우측 상단 배치) -->
-                    <div class="shrink-0 pl-2">
-                        <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhDlxjbueW0SvPAcv2A63S2A29MmX556P9-k4UAkVbMJ1xFNP_Hh2xcKk_G1JdNRdYoNe23sxVS7Xg7KX-AVvQ9lMg2SlseZ-7hIAP6xnnXEPFIQ5-Vf6udjQ1nj6QvTi-IDe9W-cxvlQfVoZ7lxXvWw5KNDEhdic3Cewf7qMdAzH8u46QTKLmPLRseN5M=s16000" alt="FLY UNITY" class="h-[105px] object-contain">
+                    <!-- 문서 제목 (로고 아래 중앙 정렬, 간섭 원천 차단) -->
+                    <div class="text-center w-full">
+                        <h2 class="text-[26px] font-black text-gray-800 leading-tight inline-block px-4">
+                            <span id="out_fly_airline_title" class="text-sky-800"></span> DEPOSIT INVOICE
+                        </h2>
                     </div>
                 </div>
 
@@ -533,6 +528,7 @@
                         <span id="out_fly_remarks" class="whitespace-pre-wrap text-[14px] leading-relaxed block"></span>
                     </p>
 
+                    <!-- 잘려나갔던 4번, 5번 항목 완벽 복구 -->
                     <div class="pl-5 relative">
                         <span id="fly_num_schedule" class="absolute left-0 font-bold">4.</span>
                         <strong>스케줄:</strong>
@@ -546,20 +542,22 @@
                         <span class="text-[14px] text-gray-600 font-normal">(\<span id="out_fly_deposit2"></span> X <span id="out_fly_pax"></span>명)</span>
                     </p>
 
-                    <div class="pl-5 relative mb-4">
+                    <div class="pl-5 relative mb-2">
                         <span id="fly_num_account" class="absolute left-0 font-bold">6.</span>
                         <p><strong>예치금 계좌 : <span id="out_fly_account" class="text-[16px] text-sky-800 font-black tracking-wide ml-1"></span></strong></p>
                         <p class="font-bold mt-1">예치금 환급 규정을 꼭 확인하신 후 송금 부탁드리며 송금 후 연락 주시기 바랍니다.</p>
                     </div>
                 </div>
 
-                <!-- Footer (회사 정보 하단 이동 및 기존 직인 삭제) -->
-                <div class="mt-auto pt-4 border-t-[2px] border-sky-900 text-center shrink-0 w-full">
-                    <div class="text-[14px] font-black text-sky-900 tracking-widest mb-1.5">
-                        FLY UNITY <span class="font-bold text-gray-700 text-[13px] ml-1">(주)플라이유니티</span>
+                <!-- Signature & Stamp (푸터 삭제 후 레이아웃 마무리를 위한 상단 라인 추가) -->
+                <div class="mt-auto pt-4 pb-4 flex justify-end items-center pr-[50px] relative shrink-0 border-t-[2px] border-sky-900 mt-4">
+                    <div class="text-[18px] font-black tracking-widest text-gray-800 relative z-10">
+                        (주)플라이유니티 대표이사 <span class="ml-2 font-bold text-[16px]">(인)</span>
                     </div>
-                    <p class="text-[11.5px] text-gray-600 font-bold mb-0.5">5억원 배상책임보험 가입업체 &nbsp;|&nbsp; 중화권 일본 동남아시아 전문 랜드</p>
-                    <p class="text-[10px] text-gray-500">강원특별자치도 강릉시 경강로 2141(옥천동) 현대자동차 강릉사옥 3층 | TEL 1577.8546 FAX 033.641.9333</p>
+                    <!-- 실제 직인 이미지 -->
+                    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEg5NROwOPTwZwGXJqq88AYAG3-YDmzxbboxS585p4a3NUcTbqVm7NPa1xjCPybjXY9pKlGZAS3PPXLsTGuCatiLE743o12OMTDB4RggSlEBJi4CsqnDXrgB1BAuwbtGshxmNGkbXdH5tQK8Z214rkGzHFbjr-qBA8qGIUAE5CPPxB0NWJkiIXqP9sVwsYY=w200-h200" 
+                         alt="직인" 
+                         class="absolute right-[30px] top-[2px] w-[60px] h-[60px] mix-blend-multiply opacity-95 z-20">
                 </div>
             </div>
 
@@ -768,21 +766,30 @@
             }
         }
 
-        // 데포짓 총액 계산
+        // 데포짓 총액 계산 (에러 방지를 위한 안전 코드 추가)
         function calcFlyDeposit() {
-            const depStr = document.getElementById('in_fly_deposit').value || "0";
+            const depStr = document.getElementById('in_fly_deposit')?.value || "0";
             const dep = Number(depStr.replace(/,/g, ''));
-            const pax = Number(document.getElementById('in_fly_pax').value) || 0;
+            const pax = Number(document.getElementById('in_fly_pax')?.value) || 0;
             const total = dep * pax;
             
             const formattedTotal = total.toLocaleString('ko-KR');
-            document.getElementById('label_fly_total').innerText = formattedTotal;
-            document.getElementById('out_fly_total').innerText = formattedTotal;
+            
+            const elLabelTotal = document.getElementById('label_fly_total');
+            if(elLabelTotal) elLabelTotal.innerText = formattedTotal;
+            
+            const elOutTotal = document.getElementById('out_fly_total');
+            if(elOutTotal) elOutTotal.innerText = formattedTotal;
             
             // 미리보기 화면의 단가/인원도 실시간 동기화
-            document.getElementById('out_fly_deposit').innerText = dep.toLocaleString('ko-KR');
-            document.getElementById('out_fly_deposit2').innerText = dep.toLocaleString('ko-KR');
-            document.getElementById('out_fly_pax').innerText = pax || "";
+            const elOutDep = document.getElementById('out_fly_deposit');
+            if(elOutDep) elOutDep.innerText = dep.toLocaleString('ko-KR');
+            
+            const elOutDep2 = document.getElementById('out_fly_deposit2');
+            if(elOutDep2) elOutDep2.innerText = dep.toLocaleString('ko-KR');
+            
+            const elOutPax = document.getElementById('out_fly_pax');
+            if(elOutPax) elOutPax.innerText = pax || "";
         }
 
         // 모든 input에 이벤트 리스너 걸기
